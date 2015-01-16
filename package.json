@@ -1,0 +1,28 @@
+{
+  "name": "walrusirc",
+  "version": "0.0.1",
+  "description": "An alternative client to OmnomIRC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "omnomirc"
+  ],
+  "author": "juju2143",
+  "license": "GPL3",
+  "dependencies": {
+    "express": "^4.11.0",
+    "mysql": "^2.5.4",
+    "socket.io": "^1.2.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juju2143/walrusirc"
+  },
+  "bugs": {
+    "url": "https://github.com/juju2143/walrusirc/issues"
+  },
+  "homepage": "https://github.com/juju2143/walrusirc"
+}

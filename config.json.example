@@ -1,0 +1,11 @@
+{
+  "port": 4200,
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "YourPasswordHere",
+    "database": "OmnomIRC"
+  },
+  "curid": "/run/omnomirc_curid",
+  "channel": 0
+}

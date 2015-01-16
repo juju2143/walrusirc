@@ -1,0 +1,26 @@
+body
+{
+  padding: 50px 6px 34px 6px;
+}
+
+.timestamp
+{
+  color: gray;
+}
+
+.c0 { color: white; }
+.c1 { color: black; }
+.c2 { color: blue; }
+.c3 { color: green; }
+.c4 { color: red; }
+.c5 { color: brown; }
+.c6 { color: purple; }
+.c7 { color: orange; }
+.c8 { color: yellow; }
+.c9 { color: lime; }
+.c10 { color: teal; }
+.c11 { color: cyan; }
+.c12 { color: royalblue; }
+.c13 { color: fuchsia; }
+.c14 { color: gray; }
+.c15 { color: silver; }

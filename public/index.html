@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>walrusirc</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
+        <img alt="CodeWalrus" src="http://codewalr.us/other/superwalriilandicon.png">
+      </a>
+      <!--ul class="dropdown-menu" role="menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+      </ul-->
+    </div>
+    <div class="collapse navbar-collapse" id="bs-walrus-navbar-collapse-1">
+      <p id="topic" class="navbar-text"></p>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bars"></i></a>
+          <!--ul class="dropdown-menu" role="menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul-->
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>  
+  <ul id="messages" class="list-unstyled"></ul>
+  <div class="input-group navbar-fixed-bottom">
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-default"><i class="fa fa-cog fa-fw"></i></button>
+      <button type="button" class="btn btn-default"><i class="fa fa-bars fa-fw"></i></button>
+    </span>
+    <input class="form-control" id="inputmsg" placeholder="Type here... Actually don't it doesn't work yet." />
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-default">Send</button>
+    </span>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.rawgit.com/SoapBox/jQuery-linkify/v1.1.7/dist/jquery.linkify.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>
