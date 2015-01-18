@@ -6,8 +6,10 @@ var io = require('socket.io')(server);
 var port = config.port || 4200;
 var mysql = require('mysql');
 var fs = require('fs');
+var crypto = require('crypto');
 
-server.listen(port, function () {
+server.listen(port, function()
+{
   console.log('Server listening at port %d', port);
 });
 
@@ -19,9 +21,13 @@ connection.connect();
 
 var linenum = fs.readFileSync(config.curid, "utf-8");
 
-io.on('connection', function(socket){
-  socket.on('lastlines', function(data){
-    connection.query('SELECT * FROM irc_lines WHERE channel = ? ORDER BY line_number DESC LIMIT ?', [config.channel, data.lines], function(err, rows, fields) {
+io.on('connection', function(socket)
+{
+  var ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+  socket.on('lastlines', function(data)
+  {
+    connection.query('SELECT * FROM irc_lines WHERE channel = ? ORDER BY line_number DESC LIMIT ?', [config.channel, data.lines], function(err, rows, fields)
+    {
       if(err) return;
       if(rows.length > 0)
       {
@@ -33,14 +39,17 @@ io.on('connection', function(socket){
       socket.emit('scroll',"");
     });
 
-    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields) {
+    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields)
+    {
       if(err) return;
       socket.emit('topics',rows[0]);
     });
   });
 
-  socket.on('lastcurid', function(data){
-    connection.query('SELECT * FROM irc_lines WHERE channel = ? AND line_number > ? ORDER BY line_number DESC', [config.channel, data.curid], function(err, rows, fields) {
+  socket.on('lastcurid', function(data)
+  {
+    connection.query('SELECT * FROM irc_lines WHERE channel = ? AND line_number > ? ORDER BY line_number DESC', [config.channel, data.curid], function(err, rows, fields)
+    {
       if(err) return;
       if(rows.length > 0)
       {
@@ -52,14 +61,25 @@ io.on('connection', function(socket){
       socket.emit('scroll',"");
     });
 
-    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields) {
+    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields)
+    {
       if(err) return;
       socket.emit('topics',rows[0]);
     });
+  });
+
+  socket.on('auth', function(data)
+  {
+    var time = Math.floor(new Date().getTime()/1000);
+    var hash = crypto.createHmac('sha512', [config.key,time,config.network].join(""));
+    hash.update(ip);
+    var digest = hash.digest('hex');
+    socket.emit('auth', {checkLoginURL: config.checkLoginURL+"?sid="+digest+"|"+time+"&network="+config.network+"&jsoncallback=?"});
   });
 });
 
-fs.watch(config.curid, function(event, filename) {
+fs.watch(config.curid, function(event, filename)
+{
   var line = fs.readFileSync(config.curid, "utf-8");
   if(event == 'change' && line != linenum && line != "")
   {
@@ -78,7 +98,8 @@ fs.watch(config.curid, function(event, filename) {
   }
 });
 
-process.on('SIGINT', function(){
+process.on('SIGINT', function()
+{
   console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
   connection.end();
   process.exit();

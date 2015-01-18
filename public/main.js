@@ -1,5 +1,6 @@
 var laststamp = new Date();
 var curid = 0;
+var auth;
 
 function scroll()
 {
@@ -57,31 +58,61 @@ function newDay(timestamp)
 
 var socket = io();
 
-socket.on('message', function(data){
+socket.on('message', function(data)
+{
   if(data.line_number)
     curid = data.line_number;
   msg(data.name1, data.message, data.time);
 });
 
-socket.on('action', function(data){
+socket.on('action', function(data)
+{
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, data.message, data.time);
 });
 
-socket.on('topics', function(data){
+socket.on('topics', function(data)
+{
   $('#topic').text(data.topic);
   //$('#topic').linkify();
 });
 
-socket.on('scroll', function(data){
+socket.on('scroll', function(data)
+{
   scroll();
 });
 
+socket.emit('auth', {});
 socket.emit('lastlines', {lines: 100});
 
-socket.on('reconnect', function(num){
-  console.log("reconnected: "+curid);
+socket.on('reconnect', function(num)
+{
   if(curid != 0)
     socket.emit('lastcurid', {curid: curid});
+});
+
+socket.on('auth', function(data)
+{
+  $.getJSON(data.checkLoginURL, function(data)
+  {
+    auth = data;
+    if(auth.nick != "")
+    {
+      $("#inputmsg").prop("disabled", false);
+      console.log("Hello, "+auth.nick);
+    }
+    else
+    {
+      $("#inputmsg").prop("placeholder", "You need to login if you want to chat!");
+    }
+  });
+});
+
+$("#inputmsg").keypress(function(e)
+{
+  if(e.which == 13)
+  {
+    $("#inputmsg").val("");
+  }
 });
