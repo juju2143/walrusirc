@@ -1,4 +1,5 @@
 var laststamp = new Date();
+var curid = 0;
 
 function scroll()
 {
@@ -57,10 +58,14 @@ function newDay(timestamp)
 var socket = io();
 
 socket.on('message', function(data){
+  if(data.line_number)
+    curid = data.line_number;
   msg(data.name1, data.message, data.time);
 });
 
 socket.on('action', function(data){
+  if(data.line_number)
+    curid = data.line_number;
   action(data.name1, data.message, data.time);
 });
 
@@ -73,4 +78,10 @@ socket.on('scroll', function(data){
   scroll();
 });
 
-socket.emit('conn', {lines: 100});
+socket.emit('lastlines', {lines: 100});
+
+socket.on('reconnect', function(num){
+  console.log("reconnected: "+curid);
+  if(curid != 0)
+    socket.emit('lastcurid', {curid: curid});
+});
