@@ -21,10 +21,10 @@ function msg(nick, message, timestamp)
   var text = "<li class=\"message\"><ul class=\"list-inline\"><li class=\"name c"+color_of(nick)+"\">";
   text += $("<div/>").text(nick).html();
   text += "</li><li class=\"msgbody\">";
-  text += $("<div/>").text(message).html();
+  text += parseMessage(message);
   text += "</li><li class=\"timestamp small pull-right\">";
   var stamp = new Date(timestamp*1000);
-  text += $("<div/>").text(stamp.toLocaleTimeString()).html();
+  text += $("<span/>").text(stamp.toLocaleTimeString()).html();
   text += "</li></ul></li>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
@@ -37,10 +37,10 @@ function action(nick, message, timestamp)
   var text = "<li class=\"message\"><ul class=\"list-inline\"><li>*</li><li class=\"name c"+color_of(nick)+"\">";
   text += $("<div/>").text(nick).html();
   text += "</li><li class=\"msgbody\">";
-  text += $("<div/>").text(message).html();
+  text += parseMessage(message);
   text += "</li><li class=\"timestamp small pull-right\">";
   var stamp = new Date(timestamp*1000);
-  text += $("<div/>").text(stamp.toLocaleTimeString()).html();
+  text += $("<span/>").text(stamp.toLocaleTimeString()).html();
   text += "</li></ul></li>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
@@ -51,7 +51,7 @@ function action(nick, message, timestamp)
 function newDay(timestamp)
 {
   var text = "<li class=\"message\"><ul class=\"list-inline text-center\"><li class=\"timestamp small\">";
-  text += $("<div/>").text(timestamp.toLocaleDateString()).html();
+  text += $("<span/>").text(timestamp.toLocaleDateString()).html();
   text += "</li></ul></li>";
   $("#messages").append(text);
 }
@@ -74,8 +74,7 @@ socket.on('action', function(data)
 
 socket.on('topics', function(data)
 {
-  $('#topic').text(data.topic);
-  //$('#topic').linkify();
+  $('#topic').html(parseMessage(data.topic,true));
 });
 
 socket.on('scroll', function(data)
@@ -120,16 +119,35 @@ socket.on('auth', function(data)
 
 $("#inputmsg").keypress(function(e)
 {
-  if(e.which == 13 && $("#inputmsg").val() != "")
+  if(e.which == 13)
+    $("#send").click();
+});
+
+$("#send").click(function(e)
+{
+  if($("#inputmsg").val() != "")
   {
     var message = $("#inputmsg").val().trim();
     var parts = message.split(" ");
-    if(parts[0].substr(0,1)=='/')
+    if(parts[0].substr(0,1) == '/')
     {
-      switch(parts[0].substr(1).toLowerCase())
+      if(parts[0].substr(1,1) == '/')
+      {
+        socket.emit('message', {message: message.substr(1), auth: auth, action: 0});      
+      }
+      else switch(parts[0].substr(1).toLowerCase())
       {
         case 'me':
           socket.emit('message', {message: message.substr(4), auth: auth, action: 1});
+          break;
+        case 'ponies':
+          var fs = document.createElement("script");
+          fs.onload = function()
+          {
+            Derpy();
+          };
+          fs.src = "http://juju2143.ca/mousefly.js";
+          document.head.appendChild(fs);
           break;
       }
     }

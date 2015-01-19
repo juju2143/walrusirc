@@ -1,13 +1,11 @@
 body
 {
   padding: 50px 6px 34px 6px;
+  font-size: 9pt;
+  font-family: Tahoma, Arial, sans-serif;
 }
 
-.timestamp
-{
-  color: gray;
-}
-
+.timestamp { color: gray; }
 .c0 { color: white; }
 .c1 { color: black; }
 .c2 { color: blue; }
@@ -24,3 +22,22 @@ body
 .c13 { color: fuchsia; }
 .c14 { color: gray; }
 .c15 { color: silver; }
+.b0 { background-color: white; }
+.b1 { background-color: black; }
+.b2 { background-color: blue; }
+.b3 { background-color: green; }
+.b4 { background-color: red; }
+.b5 { background-color: brown; }
+.b6 { background-color: purple; }
+.b7 { background-color: orange; }
+.b8 { background-color: yellow; }
+.b9 { background-color: lime; }
+.b10 { background-color: teal; }
+.b11 { background-color: cyan; }
+.b12 { background-color: royalblue; }
+.b13 { background-color: fuchsia; }
+.b14 { background-color: gray; }
+.b15 { background-color: silver; }
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.underline { text-decoration:underline; }
