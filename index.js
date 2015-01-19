@@ -21,6 +21,19 @@ connection.connect();
 
 var linenum = fs.readFileSync(config.curid, "utf-8");
 
+function isAuthed(auth)
+{
+  var hash = crypto.createHmac('sha512', [config.network,config.key].join(""));
+  hash.update(auth.nick);
+  var digest = hash.digest('hex');
+  return digest === auth.signature;
+}
+
+function getTime()
+{
+  return Math.floor(new Date().getTime()/1000);
+}
+
 io.on('connection', function(socket)
 {
   var ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
@@ -75,6 +88,46 @@ io.on('connection', function(socket)
     hash.update(ip);
     var digest = hash.digest('hex');
     socket.emit('auth', {checkLoginURL: config.checkLoginURL+"?sid="+digest+"|"+time+"&network="+config.network+"&jsoncallback=?"});
+  });
+
+  socket.on('message', function(data)
+  {
+    if(isAuthed(data.auth) && data.message && data.message != "")
+    {
+      var action = data.action==1?"action":"message";
+      var time = getTime();
+      connection.query("UPDATE `irc_users` SET lastMsg = ? WHERE username = ? AND channel = ? AND online = ?", [time, data.auth.nick, config.channel, config.network]);
+      connection.query("INSERT INTO `irc_outgoing_messages` (message,nick,channel,action,fromSource,type) VALUES ?", [[[data.message, data.auth.nick, config.channel, data.action, config.network, action]]]);
+      connection.query("INSERT INTO `irc_lines` (name1,message,type,channel,time,online) VALUES ?", [[[data.auth.nick, data.message, action, config.channel, time, config.network]]], function(err, result)
+      {
+        if(err) return;
+        fs.writeFileSync(config.curid, result.insertId);
+      });
+    }
+  });
+
+  socket.on('join', function(data)
+  {
+    if(isAuthed(data.auth))
+    {
+      connection.query("INSERT INTO `irc_lines` (name1,type,channel,time,online) VALUES ?", [[[data.auth.nick, "join", config.channel, getTime(), config.network]]], function(err, result)
+      {
+        if(err) return;
+        fs.writeFileSync(config.curid, result.insertId);
+      });
+    }
+  });
+
+  socket.on('part', function(data)
+  {
+    if(isAuthed(data.auth))
+    {
+      connection.query("INSERT INTO `irc_lines` (name1,type,channel,time,online) VALUES ?", [[[data.auth.nick, "part", config.channel, getTime(), config.network]]], function(err, result)
+      {
+        if(err) return;
+        fs.writeFileSync(config.curid, result.insertId);
+      });
+    }
   });
 });
 

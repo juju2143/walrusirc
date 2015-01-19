@@ -90,6 +90,14 @@ socket.on('reconnect', function(num)
 {
   if(curid != 0)
     socket.emit('lastcurid', {curid: curid});
+  if(auth.nick != "")
+    socket.emit('join', {auth: auth});
+});
+
+socket.on('disconnect', function()
+{
+  if(auth.nick != "")
+    socket.emit('part', {auth: auth});  
 });
 
 socket.on('auth', function(data)
@@ -101,6 +109,7 @@ socket.on('auth', function(data)
     {
       $("#inputmsg").prop("disabled", false);
       console.log("Hello, "+auth.nick);
+      socket.emit('join', {auth: auth});
     }
     else
     {
@@ -111,8 +120,23 @@ socket.on('auth', function(data)
 
 $("#inputmsg").keypress(function(e)
 {
-  if(e.which == 13)
+  if(e.which == 13 && $("#inputmsg").val() != "")
   {
+    var message = $("#inputmsg").val().trim();
+    var parts = message.split(" ");
+    if(parts[0].substr(0,1)=='/')
+    {
+      switch(parts[0].substr(1).toLowerCase())
+      {
+        case 'me':
+          socket.emit('message', {message: message.substr(4), auth: auth, action: 1});
+          break;
+      }
+    }
+    else
+    {
+      socket.emit('message', {message: message, auth: auth, action: 0});      
+    }
     $("#inputmsg").val("");
   }
 });
