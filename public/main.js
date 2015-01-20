@@ -4,9 +4,16 @@ var auth;
 
 var scrollbackLines = 100;
 
+$.fn.insertText = function(text)
+{
+  var caretPos = $(this)[0].selectionStart;
+  var textArea = $(this).val();
+  $(this).val(textArea.substring(0, caretPos)+text+textArea.substring(caretPos));
+};
+
 function scroll()
 {
-  $("body").animate({ scrollTop: $(document).height()-$(window).height() }, 500);
+  $("body").animate({scrollTop: $(document).height()-$(window).height()}, 500);
 }
 
 function color_of(name)
@@ -22,7 +29,7 @@ function msg(nick, message, timestamp)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
-    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','i').test(message);
+    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
            + $("<div/>").text(nick).html()
@@ -41,7 +48,7 @@ function action(nick, message, timestamp)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
-    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','i').test(message);
+    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
            + $("<div/>").text(nick).html()
