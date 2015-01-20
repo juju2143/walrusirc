@@ -11,7 +11,7 @@ function scroll()
 
 function color_of(name)
 {
-  var colors = [3, 4, 6, 8, 9, 10, 11, 12, 13];
+  var colors = [19, 20, 22, 24, 25, 26, 27, 28, 29];
   sum = 0;
   for(i=0;i<name.length;i++)
     sum += name.charCodeAt(i);
@@ -20,14 +20,17 @@ function color_of(name)
 
 function msg(nick, message, timestamp)
 {
-  var text = "<tr class=\"message\"><td class=\"name text-right c"+color_of(nick)+"\">";
-  text += $("<div/>").text(nick).html();
-  text += "</td><td class=\"msgbody\">";
-  text += parseMessage(message);
-  text += "</td><td class=\"timestamp small text-right\">";
+  var highlighted = false;
+  if(auth && auth.nick != "")
+    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','i').test(message);
   var stamp = new Date(timestamp*1000);
-  text += $("<span/>").text(stamp.toLocaleTimeString()).html();
-  text += "</td></tr>";
+  var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
+           + $("<div/>").text(nick).html()
+           + "</td><td class=\"msgbody\">"
+           + parseMessage(message)
+           + "</td><td class=\"timestamp small text-right\">"
+           + $("<span/>").text(stamp.toLocaleTimeString()).html()
+           + "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
@@ -36,14 +39,17 @@ function msg(nick, message, timestamp)
 
 function action(nick, message, timestamp)
 {
-  var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">";
-  text += $("<div/>").text(nick).html();
-  text += "</span> ";
-  text += parseMessage(message);
-  text += "</td><td class=\"timestamp small text-right\">";
+  var highlighted = false;
+  if(auth && auth.nick != "")
+    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','i').test(message);
   var stamp = new Date(timestamp*1000);
-  text += $("<span/>").text(stamp.toLocaleTimeString()).html();
-  text += "</td></tr>";
+  var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
+           + $("<div/>").text(nick).html()
+           + "</span> "
+           + parseMessage(message)
+           + "</td><td class=\"timestamp small text-right\">"
+           + $("<span/>").text(stamp.toLocaleTimeString()).html()
+           + "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
@@ -52,9 +58,9 @@ function action(nick, message, timestamp)
 
 function newDay(timestamp)
 {
-  var text = "<tr colspan=\"3\" class=\"message\"><td class=\"text-center timestamp small\">";
-  text += $("<span/>").text(timestamp.toLocaleDateString()).html();
-  text += "</td></tr>";
+  var text = "<tr class=\"message\"><td colspan=\"3\" class=\"text-center timestamp small\">"
+           + $("<span/>").text(timestamp.toLocaleDateString()).html()
+           + "</td></tr>";
   $("#messages").append(text);
 }
 
@@ -75,7 +81,6 @@ var socket = io();
 
 loadOptions();
 socket.emit('auth', {});
-socket.emit('lastlines', {lines: scrollbackLines});
 
 socket.on('message', function(data)
 {
@@ -89,6 +94,58 @@ socket.on('action', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, data.message, data.time);
+});
+
+socket.on('topic', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  action(data.name1, "has changed the topic to "+data.message, data.time);
+  $('#topic').html(parseMessage(data.message,true));
+});
+
+socket.on('join', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  if(data.Online != 1)
+    action(data.name1, "has joined the channel", data.time);
+});
+
+socket.on('part', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  if(data.Online != 1)
+    action(data.name1, "has left the channel", data.time);
+});
+
+socket.on('quit', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  action(data.name1, "has quit IRC ("+data.message+")", data.time);
+});
+
+socket.on('kick', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  action(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time);
+});
+
+socket.on('mode', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  action(data.name1, "set mode "+data.message, data.time);
+});
+
+socket.on('nick', function(data)
+{
+  if(data.line_number)
+    curid = data.line_number;
+  action(data.name1, "has changed their nick to "+data.name2, data.time);
 });
 
 socket.on('topics', function(data)
@@ -130,6 +187,7 @@ socket.on('auth', function(data)
     {
       $("#inputmsg").prop("placeholder", "You need to login if you want to chat!");
     }
+    socket.emit('lastlines', {lines: scrollbackLines});
   });
 });
 
