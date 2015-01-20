@@ -116,3 +116,8 @@ body
   padding: 0px 5px 0px 0px;
   border: 0;
 }
+
+.colorlist>li>a
+{
+  display: inline-block;
+}
