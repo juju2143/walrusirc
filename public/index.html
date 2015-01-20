@@ -6,29 +6,38 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="//cdn.rawgit.com/vsn4ik/bootstrap-submenu/v1.2.10/dist/css/bootstrap-submenu.min.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
-    <div class="navbar-header">
+    <div class="navbar-header dropdown">
       <a class="navbar-brand dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
         <img alt="CodeWalrus" src="http://codewalr.us/other/superwalriilandicon.png">
       </a>
-      <!--ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
+      <ul class="dropdown-menu" role="menu">
+          <li><a href="http://walrusirc.codewalr.us"><i class="fa fa-arrows-alt"></i> Fullscreen</a></li>
+          <li><a href="http://codewalr.us/194"><i class="fa fa-question-circle"></i> About / Help</a></li>
           <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-      </ul-->
+          <li class="dropdown-submenu">
+            <a data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> Options</a>
+            <ul class="dropdown-menu" role="menu" id="optionsmenu">
+              <li><div class="input-group">
+                <span class="input-group-addon">Scrollback lines:</span>
+                <input type="number" min="0" max="1000" id="scrollback-lines" class="form-control" />
+              </div></li>
+            </ul>
+          </li>
+      </ul>
     </div>
     <div class="collapse navbar-collapse" id="bs-walrus-navbar-collapse-1">
       <p id="topic" class="navbar-text"></p>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bars"></i></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bars fa-fw"></i></a>
           <!--ul class="dropdown-menu" role="menu">
             <li><a href="#">Action</a></li>
             <li><a href="#">Another action</a></li>
@@ -41,11 +50,24 @@
     </div>
   </div>
 </nav>  
-  <ul id="messages" class="list-unstyled"></ul>
+  <table id="messages" class="table table-condensed table-striped"><tbody></tbody></table>
   <div class="input-group navbar-fixed-bottom">
-    <span class="input-group-btn">
-      <button type="button" class="btn btn-default"><i class="fa fa-cog fa-fw"></i></button>
-      <button type="button" class="btn btn-default"><i class="fa fa-bars fa-fw"></i></button>
+    <span class="input-group-btn dropdown dropup">
+      <button type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-font fa-fw"></i></button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a><i class="fa fa-bold"></i> Bold</a></li>
+        <li><a><i class="fa fa-italic"></i> Italic</a></li>
+        <li><a><i class="fa fa-underline"></i> Underline</a></li>
+        <li class="divider"></li>
+        <li class="dropdown-submenu">
+          <a data-toggle="dropdown" aria-expanded="false">Colors</a>
+          <ul class="dropdown-menu">
+            <li><a>Sub action</a></li>
+            <li><a>Something else here</a></li>
+          </ul>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-default"><i class="fa fa-smile-o fa-fw"></i></button>
     </span>
     <input class="form-control" id="inputmsg" disabled placeholder="Type here..." />
     <span class="input-group-btn">
@@ -54,6 +76,7 @@
   </div>
   <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="//cdn.rawgit.com/vsn4ik/bootstrap-submenu/v1.2.10/dist/js/bootstrap-submenu.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/parser.js"></script>
   <script src="/main.js"></script>

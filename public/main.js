@@ -2,6 +2,8 @@ var laststamp = new Date();
 var curid = 0;
 var auth;
 
+var scrollbackLines = 100;
+
 function scroll()
 {
   $("body").animate({ scrollTop: $(document).height()-$(window).height() }, 500);
@@ -18,14 +20,14 @@ function color_of(name)
 
 function msg(nick, message, timestamp)
 {
-  var text = "<li class=\"message\"><ul class=\"list-inline\"><li class=\"name c"+color_of(nick)+"\">";
+  var text = "<tr class=\"message\"><td class=\"name text-right c"+color_of(nick)+"\">";
   text += $("<div/>").text(nick).html();
-  text += "</li><li class=\"msgbody\">";
+  text += "</td><td class=\"msgbody\">";
   text += parseMessage(message);
-  text += "</li><li class=\"timestamp small pull-right\">";
+  text += "</td><td class=\"timestamp small text-right\">";
   var stamp = new Date(timestamp*1000);
   text += $("<span/>").text(stamp.toLocaleTimeString()).html();
-  text += "</li></ul></li>";
+  text += "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
@@ -34,14 +36,14 @@ function msg(nick, message, timestamp)
 
 function action(nick, message, timestamp)
 {
-  var text = "<li class=\"message\"><ul class=\"list-inline\"><li>*</li><li class=\"name c"+color_of(nick)+"\">";
+  var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">";
   text += $("<div/>").text(nick).html();
-  text += "</li><li class=\"msgbody\">";
+  text += "</span> ";
   text += parseMessage(message);
-  text += "</li><li class=\"timestamp small pull-right\">";
+  text += "</td><td class=\"timestamp small text-right\">";
   var stamp = new Date(timestamp*1000);
   text += $("<span/>").text(stamp.toLocaleTimeString()).html();
-  text += "</li></ul></li>";
+  text += "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
@@ -50,13 +52,30 @@ function action(nick, message, timestamp)
 
 function newDay(timestamp)
 {
-  var text = "<li class=\"message\"><ul class=\"list-inline text-center\"><li class=\"timestamp small\">";
+  var text = "<tr colspan=\"3\" class=\"message\"><td class=\"text-center timestamp small\">";
   text += $("<span/>").text(timestamp.toLocaleDateString()).html();
-  text += "</li></ul></li>";
+  text += "</td></tr>";
   $("#messages").append(text);
 }
 
+function loadOptions()
+{
+  if(typeof(Storage) !== "undefined")
+  {
+    scrollbackLines = localStorage.scrollbackLines?parseInt(localStorage.scrollbackLines):100;
+    $("#scrollback-lines").val(scrollbackLines);
+  }
+  else
+  {
+    $("#optionsmenu").html("<li>Sorry, your browser does not support web storage...</li>");
+  }
+}
+
 var socket = io();
+
+loadOptions();
+socket.emit('auth', {});
+socket.emit('lastlines', {lines: scrollbackLines});
 
 socket.on('message', function(data)
 {
@@ -81,9 +100,6 @@ socket.on('scroll', function(data)
 {
   scroll();
 });
-
-socket.emit('auth', {});
-socket.emit('lastlines', {lines: 100});
 
 socket.on('reconnect', function(num)
 {
@@ -157,4 +173,16 @@ $("#send").click(function(e)
     }
     $("#inputmsg").val("");
   }
+});
+
+$('.dropdown-menu').find('.input-group').click(function(e)
+{
+  e.stopPropagation();
+});
+
+$('.dropdown-submenu > a').submenupicker();
+
+$('#scrollback-lines').change(function()
+{
+  localStorage.scrollbackLines = $('#scrollback-lines').val();
 });
