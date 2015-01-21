@@ -8,4 +8,4 @@ First configure and install a traditional installation of [OmnomIRC](https://git
 
 ## Todo
 
-This client is not done yet, not every functionality is there yet and everything can change wildly between commits...
+This client is considered mostly stable, but there might be bugs and some features are still missing. Please report them in the issue tracker or in the appropriate [forum thread](http://codewalr.us/194).

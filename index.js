@@ -81,6 +81,15 @@ io.on('connection', function(socket)
     });
   });
 
+  socket.on('userlist', function(data)
+  {
+    connection.query('SELECT * FROM irc_users WHERE isOnline = 1 AND channel = ? ORDER BY username ASC', [config.channel], function(err, rows, fields)
+    {
+      if(err) return;
+      socket.emit('userlist',{users: rows});
+    });    
+  });
+
   socket.on('auth', function(data)
   {
     var time = Math.floor(new Date().getTime()/1000);

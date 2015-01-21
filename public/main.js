@@ -1,6 +1,8 @@
 var laststamp = new Date();
 var curid = 0;
 var auth;
+var users = [];
+var lines = [];
 
 var scrollbackLines = 100;
 
@@ -13,7 +15,7 @@ $.fn.insertText = function(text)
 
 function scroll()
 {
-  $("body").animate({scrollTop: $(document).height()-$(window).height()}, 500);
+  $("body").animate({scrollTop: $(document).height()-$(window).height()}, 200);
 }
 
 function color_of(name)
@@ -94,6 +96,7 @@ socket.on('message', function(data)
   if(data.line_number)
     curid = data.line_number;
   msg(data.name1, data.message, data.time);
+  lines[lines.length] = data;
 });
 
 socket.on('action', function(data)
@@ -101,6 +104,7 @@ socket.on('action', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, data.message, data.time);
+  lines[lines.length] = data;
 });
 
 socket.on('topic', function(data)
@@ -109,6 +113,7 @@ socket.on('topic', function(data)
     curid = data.line_number;
   action(data.name1, "has changed the topic to "+data.message, data.time);
   $('#topic').html(parseMessage(data.message,true));
+  lines[lines.length] = data;
 });
 
 socket.on('join', function(data)
@@ -117,6 +122,8 @@ socket.on('join', function(data)
     curid = data.line_number;
   if(data.Online != 1)
     action(data.name1, "has joined the channel", data.time);
+  socket.emit('userlist', {});
+  lines[lines.length] = data;
 });
 
 socket.on('part', function(data)
@@ -125,6 +132,8 @@ socket.on('part', function(data)
     curid = data.line_number;
   if(data.Online != 1)
     action(data.name1, "has left the channel", data.time);
+  socket.emit('userlist', {});
+  lines[lines.length] = data;
 });
 
 socket.on('quit', function(data)
@@ -132,6 +141,8 @@ socket.on('quit', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, "has quit IRC ("+data.message+")", data.time);
+  socket.emit('userlist', {});
+  lines[lines.length] = data;
 });
 
 socket.on('kick', function(data)
@@ -139,6 +150,8 @@ socket.on('kick', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time);
+  socket.emit('userlist', {});
+  lines[lines.length] = data;
 });
 
 socket.on('mode', function(data)
@@ -146,6 +159,7 @@ socket.on('mode', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, "set mode "+data.message, data.time);
+  lines[lines.length] = data;
 });
 
 socket.on('nick', function(data)
@@ -153,6 +167,8 @@ socket.on('nick', function(data)
   if(data.line_number)
     curid = data.line_number;
   action(data.name1, "has changed their nick to "+data.name2, data.time);
+  socket.emit('userlist', {});
+  lines[lines.length] = data;
 });
 
 socket.on('topics', function(data)
@@ -171,6 +187,7 @@ socket.on('reconnect', function(num)
     socket.emit('lastcurid', {curid: curid});
   if(auth.nick != "")
     socket.emit('join', {auth: auth});
+  socket.emit('userlist', {});
 });
 
 socket.on('disconnect', function()
@@ -195,13 +212,29 @@ socket.on('auth', function(data)
       $("#inputmsg").prop("placeholder", "You need to login if you want to chat!");
     }
     socket.emit('lastlines', {lines: scrollbackLines});
+    socket.emit('userlist', {});
   });
+});
+
+socket.on('userlist', function(data)
+{
+  users = data.users;
+  $("#userlist").html("");
+  for(i=0;i<users.length;i++)
+  {
+    var user = $("<span/>").text(users[i].username).html();
+    $("#userlist").append("<li><a onclick=\"$('#inputmsg').insertText('"+user+"')\">"+user+"</a></li>");
+  }
 });
 
 $("#inputmsg").keypress(function(e)
 {
   if(e.which == 13)
     $("#send").click();
+  if(e.which == 9)
+  {
+    // autocomplete stuff here
+  }
 });
 
 $("#send").click(function(e)
