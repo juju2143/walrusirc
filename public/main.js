@@ -218,23 +218,22 @@ socket.on('auth', function(data)
 
 socket.on('userlist', function(data)
 {
+  var words = [];
   users = data.users;
   $("#userlist").html("");
   for(i=0;i<users.length;i++)
   {
     var user = $("<span/>").text(users[i].username).html();
     $("#userlist").append("<li><a onclick=\"$('#inputmsg').insertText('"+user+"')\">"+user+"</a></li>");
+    words[words.length] = users[i].username;
   }
+  $("#inputmsg").tabcomplete(words, {hint: "none", after: " "});
 });
 
 $("#inputmsg").keypress(function(e)
 {
   if(e.which == 13)
     $("#send").click();
-  if(e.which == 9)
-  {
-    // autocomplete stuff here
-  }
 });
 
 $("#send").click(function(e)
