@@ -1,0 +1,159 @@
+body
+{
+  margin: 0;
+  padding: 25px 0px 10px 0px;
+  font-size: 8pt;
+  font-family: Arial, helvetica, sans-serif;
+  background-color: #E7EAEF;
+}
+
+#optionsmenu
+{
+  width: 250px;
+}
+
+.navbar-brand, .navbar-nav li a
+{
+  height: 24px;
+  padding-top:0px !important;
+  padding-bottom:0px !important;
+}
+
+.navbar-text
+{
+  margin-top: 4px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.navbar
+{
+  min-height:24px !important;
+}
+
+.navbar-right
+{
+  font-size: 12pt;
+}
+.timestamp { color: gray; }
+.c0 { color: white; }
+.c1 { color: black; }
+.c2 { color: blue; }
+.c3 { color: green; }
+.c4 { color: red; }
+.c5 { color: brown; }
+.c6 { color: purple; }
+.c7 { color: orange; }
+.c8 { color: yellow; }
+.c9 { color: lime; }
+.c10 { color: teal; }
+.c11 { color: cyan; }
+.c12 { color: royalblue; }
+.c13 { color: fuchsia; }
+.c14 { color: gray; }
+.c15 { color: silver; }
+.c19 { color: #000000; }
+.c20 { color: #800000; }
+.c22 { color: #551955; }
+.c24 { color: #AA5500; }
+.c25 { color: #008000; }
+.c26 { color: #195555; }
+.c27 { color: #006060; }
+.c28 { color: #000080; }
+.c29 { color: #606060; }
+.b0 { background-color: white; }
+.b1 { background-color: black; }
+.b2 { background-color: blue; }
+.b3 { background-color: green; }
+.b4 { background-color: red; }
+.b5 { background-color: brown; }
+.b6 { background-color: purple; }
+.b7 { background-color: orange; }
+.b8 { background-color: yellow; }
+.b9 { background-color: lime; }
+.b10 { background-color: teal; }
+.b11 { background-color: cyan; }
+.b12 { background-color: royalblue; }
+.b13 { background-color: fuchsia; }
+.b14 { background-color: gray; }
+.b15 { background-color: silver; }
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.underline { text-decoration:underline; }
+
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #CCC;
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #CCC;
+}
+
+::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
+}
+
+.table-striped > tbody > tr:nth-child(odd)
+{
+  background-color: #D6DBE1;
+}
+
+.name
+{
+  /*text-shadow: -1px -1px 2px rgba(127, 127, 127, 1), 1px -1px 2px rgba(127, 127, 127, 1), -1px 1px 2px rgba(127, 127, 127, 1), 1px 1px 2px rgba(127, 127, 127, 1);*/
+}
+
+.table-condensed>thead>tr>th,
+.table-condensed>tbody>tr>th,
+.table-condensed>tfoot>tr>th,
+.table-condensed>thead>tr>td,
+.table-condensed>tbody>tr>td,
+.table-condensed>tfoot>tr>td
+{
+  padding: 0px 5px 0px 0px;
+  border: 0;
+}
+
+.colorlist>li>a
+{
+  display: inline-block;
+}
+
+#userlist
+{
+  height: 100vh;
+  overflow: auto;
+  top: 0;
+}
+
+#userlist>li>a
+{
+  height: 1.5em;
+  font-size: 8pt;
+}
+
+.navbar-fixed-bottom
+{
+  z-index: 0;
+}
+
+.navbar-fixed-bottom > .input-group-btn > .btn, .navbar-fixed-bottom > .form-control
+{
+  font-size: 9pt;
+  height: 30px;
+}
+
+.navbar-fixed-bottom > .input-group-btn > .btn
+{
+  font-size: 10pt;
+  border-radius: 0px;
+}

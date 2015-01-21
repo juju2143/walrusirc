@@ -34,11 +34,11 @@ function msg(nick, message, timestamp)
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
-           + $("<div/>").text(nick).html()
+           + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
            + "</td><td class=\"msgbody\">"
            + parseMessage(message)
            + "</td><td class=\"timestamp small text-right\">"
-           + $("<span/>").text(stamp.toLocaleTimeString()).html()
+           + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
            + "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
@@ -53,11 +53,11 @@ function action(nick, message, timestamp)
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
-           + $("<div/>").text(nick).html()
+           + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
            + "</span> "
            + parseMessage(message)
            + "</td><td class=\"timestamp small text-right\">"
-           + $("<span/>").text(stamp.toLocaleTimeString()).html()
+           + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
            + "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);

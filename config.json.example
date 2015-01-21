@@ -7,7 +7,7 @@
     "database": "OmnomIRC"
   },
   "curid": "/run/omnomirc_curid",
-  "channel": 0,
+  "channel": "0",
   "network": 1,
   "key": "Encrypt key from checkLogin.php here",
   "checkLoginURL": "http://example.com/checkLogin.php"
