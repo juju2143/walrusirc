@@ -94,7 +94,7 @@ function parseColors(colorStr)
     }
     if(didChange){
       colorStr += '</span>';
-      colorStr += '<span class="'+(textDecoration.fg!=-1?'c'+textDecoration.fg+' ':'')+(textDecoration.bg!=-1?'b'+textDecoration.bg+' ':'')+(textDecoration.bold?'bold ':'')+(textDecoration.underline?'underline ':'')+(textDecoration.italic?'italic':'')+'">';
+      colorStr += '<span class="'+(textDecoration.fg!=-1?'c'+parseInt(textDecoration.fg)+' ':'')+(textDecoration.bg!=-1?'b'+parseInt(textDecoration.bg)+' ':'')+(textDecoration.bold?'bold ':'')+(textDecoration.underline?'underline ':'')+(textDecoration.italic?'italic':'')+'">';
     }else{
       colorStr+=arrayResults[i];
     }

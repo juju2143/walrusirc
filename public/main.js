@@ -3,6 +3,7 @@ var curid = 0;
 var auth;
 var users = [];
 var lines = [];
+var settings = [];
 
 var scrollbackLines = 100;
 
@@ -89,6 +90,7 @@ function loadOptions()
 var socket = io();
 
 loadOptions();
+socket.emit('settings', {});
 socket.emit('auth', {});
 
 socket.on('message', function(data)
@@ -185,15 +187,23 @@ socket.on('reconnect', function(num)
 {
   if(curid != 0)
     socket.emit('lastcurid', {curid: curid});
-  if(auth.nick != "")
-    socket.emit('join', {auth: auth});
+  //if(auth.nick != "")
+  //  socket.emit('join', {auth: auth});
   socket.emit('userlist', {});
+  $("#inputmsg").prop("placeholder", "Type here...");
+  if(auth.nick != "")
+    $("#inputmsg").prop("disabled", false);
+  else
+    $("#inputmsg").prop("placeholder", "You need to login if you want to chat!");
 });
+
 
 socket.on('disconnect', function()
 {
-  if(auth.nick != "")
-    socket.emit('part', {auth: auth});  
+  //if(auth.nick != "")
+  //  socket.emit('part', {auth: auth});  
+  $("#inputmsg").prop("placeholder", "WalrusIRC has been disconnected. Reconnecting...");
+  $("#inputmsg").prop("disabled", true);
 });
 
 socket.on('auth', function(data)
@@ -205,7 +215,7 @@ socket.on('auth', function(data)
     {
       $("#inputmsg").prop("disabled", false);
       console.log("Hello, "+auth.nick);
-      socket.emit('join', {auth: auth});
+      //socket.emit('join', {auth: auth});
     }
     else
     {
@@ -228,6 +238,11 @@ socket.on('userlist', function(data)
     words[words.length] = users[i].username;
   }
   $("#inputmsg").tabcomplete(words, {hint: "none", after: " "});
+});
+
+socket.on('settings', function(data)
+{
+  settings = data;
 });
 
 $("#inputmsg").keypress(function(e)

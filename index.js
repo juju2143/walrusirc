@@ -15,6 +15,20 @@ server.listen(port, function()
 
 app.use(express.static(__dirname + '/public'));
 
+app.get('/logs/:channel/:year/:month/:day', function(req, res)
+{
+  var ts = new Date(req.params.year, req.params.month-1, req.params.day, 0, 0, 0, 0).getTime()/1000;
+  connection.query('SELECT * FROM irc_lines WHERE channel = ? AND time >= ? AND time < ? ORDER BY line_number ASC', [req.params.channel, ts, ts+86400], function(err, rows, fields)
+  {
+    res.render('logviewer.ejs', {date: ts, lines: rows});
+  });
+});
+
+app.get('*', function(req, res){
+  res.status(404);
+  res.sendFile(__dirname + '/public/404.html');
+});
+
 var connection = mysql.createConnection(config.mysql);
 
 connection.connect();
@@ -37,6 +51,24 @@ function getTime()
 io.on('connection', function(socket)
 {
   var ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+
+  socket.on('settings', function(data)
+  {
+    connection.query('SELECT * FROM irc_vars', function(err, rows, fields)
+    {
+      if(err) return;
+      var settings = [];
+      if(rows.length > 0)
+      {
+        for(i=0;i<rows.length;i++)
+        {
+          settings[rows[i].name] = JSON.parse(rows[i].value);
+        }
+      }
+      socket.emit('settings',settings);
+    });
+  });
+
   socket.on('lastlines', function(data)
   {
     connection.query('SELECT * FROM irc_lines WHERE channel = ? ORDER BY line_number DESC LIMIT ?', [config.channel, data.lines], function(err, rows, fields)
