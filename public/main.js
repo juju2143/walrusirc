@@ -3,7 +3,7 @@ var curid = 0;
 var auth;
 var users = [];
 var lines = [];
-var settings = [];
+var settings = {};
 
 var scrollbackLines = 100;
 

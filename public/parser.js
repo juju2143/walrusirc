@@ -105,6 +105,21 @@ function parseColors(colorStr)
   return colorStr;
 }
 
+function parseSmileys(s){
+  if(settings.smileys)
+    var smileys = settings.smileys;
+  else
+    var smileys = [];
+  var addStuff = '';
+  if(!s){
+    return '';
+  }
+  $.each(smileys,function(i,smiley){
+    s = s.replace(RegExp(smiley.regex,'g'),smiley.replace.split('ADDSTUFF').join(addStuff).split('PIC').join(smiley.pic).split('ALT').join(smiley.alt));
+  });
+  return s;
+}
+
 function parseMessage(s,nav,noSmileys)
 {
   if(nav==undefined || !nav){
@@ -116,9 +131,9 @@ function parseMessage(s,nav,noSmileys)
   s = (s=="\x00"?'':s); //fix 0-string bug
   s = $('<span/>').text(s).html();
   s = parseLinks(s, nav);
-  //if(noSmileys===false){
-  //  s = parseSmileys(s);
-  //}
+  if(noSmileys===false){
+    s = parseSmileys(s);
+  }
   s = parseColors(s);
   return s;
 }

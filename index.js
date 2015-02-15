@@ -57,7 +57,7 @@ io.on('connection', function(socket)
     connection.query('SELECT * FROM irc_vars', function(err, rows, fields)
     {
       if(err) return;
-      var settings = [];
+      var settings = {};
       if(rows.length > 0)
       {
         for(i=0;i<rows.length;i++)
