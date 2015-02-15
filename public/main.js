@@ -87,6 +87,13 @@ function loadOptions()
   }
 }
 
+function isValidDate(d)
+{
+  if(Object.prototype.toString.call(d) !== "[object Date]")
+    return false;
+  return !isNaN(d.getTime());
+}
+
 var socket = io();
 
 loadOptions();
@@ -297,4 +304,13 @@ $('.dropdown-submenu > a').submenupicker();
 $('#scrollback-lines').change(function()
 {
   localStorage.scrollbackLines = $('#scrollback-lines').val();
+});
+
+$('#view-logs').click(function()
+{
+  var stamp = new Date(Date.parse($("#logs-date").val()));
+  if(isValidDate(stamp))
+  {
+    location.replace("/logs/0/"+stamp.getUTCFullYear()+"/"+(stamp.getUTCMonth()+1)+"/"+stamp.getUTCDate());
+  }
 });

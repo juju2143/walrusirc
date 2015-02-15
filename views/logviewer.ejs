@@ -25,18 +25,20 @@ function color_of(name)
   <div class="container-fluid">
     <div class="navbar-header dropdown">
       <a class="navbar-brand dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
-        <img alt="CodeWalrus" src="http://codewalr.us/other/superwalriilandicon.png">
+        <img alt="CodeWalrus" src="/logo.png" />
       </a>
       <ul class="dropdown-menu" role="menu">
-          <li><a href="http://walrusirc.codewalr.us" target="_blank"><i class="fa fa-arrows-alt"></i> Fullscreen</a></li>
+          <li><a href="http://walrusirc.codewalr.us"><i class="fa fa-arrow-left"></i> Back to chat</a></li>
+          <li><a href="" target="_blank"><i class="fa fa-arrows-alt"></i> Fullscreen</a></li>
           <li><a href="http://codewalr.us/194" target="_top"><i class="fa fa-question-circle"></i> About / Help</a></li>
           <li class="divider"></li>
           <li class="dropdown-submenu">
             <a data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> Options</a>
             <ul class="dropdown-menu" role="menu" id="optionsmenu">
               <li><div class="input-group">
-                <span class="input-group-addon">Scrollback lines:</span>
-                <input type="number" min="0" max="1000" id="scrollback-lines" class="form-control" />
+                <span class="input-group-addon">Logs:</span>
+                <input type="date" id="logs-date" class="form-control" />
+                <span class="input-group-btn"><button type="button" id="view-logs" class="btn btn-default"><i class="fa fa-play"></i></button></span>
               </div></li>
             </ul>
           </li>
