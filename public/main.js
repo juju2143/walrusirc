@@ -4,6 +4,9 @@ var auth;
 var users = [];
 var lines = [];
 var settings = {};
+var readline = [];
+var curreadline = 0;
+var curline = "";
 
 var scrollbackLines = 100;
 
@@ -107,6 +110,10 @@ socket.on('message', function(data)
     curid = data.line_number;
   msg(data.name1, data.message, data.time);
   lines[lines.length] = data;
+  if(data.name1 == auth.nick && data.Online == 1)
+    readline[readline.length] = data;
+  if(curreadline != readline.length-1)
+    curreadline = readline.length;
 });
 
 socket.on('action', function(data)
@@ -115,6 +122,10 @@ socket.on('action', function(data)
     curid = data.line_number;
   action(data.name1, data.message, data.time);
   lines[lines.length] = data;
+  if(data.name1 == auth.nick && data.Online == 1)
+    readline[readline.length] = data;
+  if(curreadline != readline.length-1)
+    curreadline = readline.length;
 });
 
 socket.on('topic', function(data)
@@ -260,10 +271,27 @@ socket.on('settings', function(data)
   });
 });
 
-$("#inputmsg").keypress(function(e)
+$("#inputmsg").keydown(function(e)
 {
   if(e.which == 13)
     $("#send").click();
+  if(e.which == 38)
+  {
+    if(curreadline == readline.length)
+      curline = $('#inputmsg').val();
+    if(curreadline != 0)
+      curreadline--;
+    $('#inputmsg').val(readline[curreadline].message);
+  }
+  if(e.which == 40)
+  {
+    if(curreadline != readline.length)
+      curreadline++;
+    if(curreadline != readline.length)
+      $('#inputmsg').val(readline[curreadline].message);
+    else
+      $('#inputmsg').val(curline);
+  }
 });
 
 $("#send").click(function(e)
