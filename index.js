@@ -71,7 +71,7 @@ io.on('connection', function(socket)
 
   socket.on('lastlines', function(data)
   {
-    connection.query('SELECT * FROM irc_lines WHERE channel = ? ORDER BY line_number DESC LIMIT ?', [config.channel, data.lines], function(err, rows, fields)
+    connection.query('SELECT * FROM irc_lines WHERE channel = ? AND time >= ? ORDER BY line_number DESC LIMIT ?', [config.channel, Math.floor(new Date().getTime()/1000)-config.maxBacklog, data.lines], function(err, rows, fields)
     {
       if(err) return;
       if(rows.length > 0)
@@ -93,7 +93,7 @@ io.on('connection', function(socket)
 
   socket.on('lastcurid', function(data)
   {
-    connection.query('SELECT * FROM irc_lines WHERE channel = ? AND line_number > ? ORDER BY line_number DESC', [config.channel, data.curid], function(err, rows, fields)
+    connection.query('SELECT * FROM irc_lines WHERE channel = ? AND time >= ? AND line_number > ? ORDER BY line_number DESC', [config.channel, Math.floor(new Date().getTime()/1000)-config.maxBacklog, data.curid], function(err, rows, fields)
     {
       if(err) return;
       if(rows.length > 0)

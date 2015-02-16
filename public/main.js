@@ -37,7 +37,7 @@ function msg(nick, message, timestamp)
   var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
            + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
            + "</td><td class=\"msgbody\">"
-           + parseMessage(message)
+           + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
            + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
            + "</td></tr>";
@@ -56,7 +56,7 @@ function action(nick, message, timestamp)
   var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
            + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
            + "</span> "
-           + parseMessage(message)
+           + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
            + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
            + "</td></tr>";
@@ -80,6 +80,7 @@ function loadOptions()
   {
     scrollbackLines = localStorage.scrollbackLines?parseInt(localStorage.scrollbackLines):100;
     $("#scrollback-lines").val(scrollbackLines);
+    $("#smileys-enable").prop('checked', localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false);
   }
   else
   {
@@ -304,6 +305,11 @@ $('.dropdown-submenu > a').submenupicker();
 $('#scrollback-lines').change(function()
 {
   localStorage.scrollbackLines = $('#scrollback-lines').val();
+});
+
+$('#smileys-enable').change(function()
+{
+  localStorage.disableSmileys = $('#smileys-enable').is(':checked');
 });
 
 $('#view-logs').click(function()
