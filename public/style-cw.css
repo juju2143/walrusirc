@@ -162,3 +162,8 @@ body
 {
   content: url('logohover.gif');
 }
+
+#smileylist
+{
+  text-align: center;
+}

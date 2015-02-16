@@ -251,6 +251,13 @@ socket.on('userlist', function(data)
 socket.on('settings', function(data)
 {
   settings = data;
+  $.each(settings.smileys, function(index, smiley)
+  {
+    if(smiley.inMenu)
+      $("#smileylist").append("<img src=\""+smiley.pic+"\" alt=\""+smiley.alt+"\" onclick=\"$('#inputmsg').insertText(' "+smiley.code+" ')\" /> ");
+    if(index%10 == 9)
+      $("#smileylist").append("<br/>");
+  });
 });
 
 $("#inputmsg").keypress(function(e)
