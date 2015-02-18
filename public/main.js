@@ -271,6 +271,11 @@ socket.on('settings', function(data)
   });
 });
 
+socket.on('file', function(data)
+{
+  $('#inputmsg').insertText(data.url);
+});
+
 $("#inputmsg").keydown(function(e)
 {
   if(e.which == 13)
@@ -354,4 +359,32 @@ $('#view-logs').click(function()
   {
     location.replace("/logs/0/"+stamp.getUTCFullYear()+"/"+(stamp.getUTCMonth()+1)+"/"+stamp.getUTCDate());
   }
+});
+
+$('#inputmsg').on("dragover", function(){return false;});
+$('#inputmsg').on("dragend", function(){return false;});
+$('#inputmsg').on("drop", function(e)
+{
+	e.preventDefault();
+	e.stopPropagation();
+	e = e.originalEvent || e;
+	var file = (e.files || e.dataTransfer.files)[0],
+	reader = new FileReader();
+	reader.onload = function(event)
+        {
+    		console.log(file);
+                if(auth && auth.nick != "")
+                  socket.emit('file', { auth: auth,
+					info: {
+						lastModified: file.lastModified,
+						lastModifiedDate: file.lastModifiedDate,
+						name: file.name,
+						size: file.size,
+						type: file.type
+					},
+					file: event.target.result
+                                      });
+  	};
+	if(/^image\//.test(file.type) && file.size <= (settings.fileLimit||131072))
+		reader.readAsArrayBuffer(file);
 });

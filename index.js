@@ -65,6 +65,7 @@ io.on('connection', function(socket)
           settings[rows[i].name] = JSON.parse(rows[i].value);
         }
       }
+      settings.fileLimit = config.fileLimit;
       socket.emit('settings',settings);
     });
   });
@@ -167,6 +168,64 @@ io.on('connection', function(socket)
       {
         if(err) return;
         fs.writeFileSync(config.curid, result.insertId);
+      });
+    }
+  });
+
+  socket.on('file', function(data)
+  {
+    if(isAuthed(data.auth))
+    {
+      //console.log(data.info);
+      var hash = crypto.createHash('sha1');
+      hash.update(data.file);
+      var digest = hash.digest('hex');
+
+      connection.query('SELECT * FROM irc_uploads WHERE hash = ?', [digest], function(err, rows, fields)
+      {
+        if(err) return;
+        if(rows.length > 0)
+        {
+          socket.emit('file',{"url": config.imgurl+rows[0].filename});
+        }
+        else
+        {
+          if(/^image\//.test(data.info.type) && data.info.size <= config.fileLimit)
+          {
+            filename = data.info.name;
+            var cont = false;
+//          while(cont)
+//          {
+              connection.query('SELECT * FROM irc_uploads WHERE filename = ?', [filename], function(err, rows, fields)
+              {
+                if(err) return;
+                if(rows.length > 0)
+                {
+                  filename = filename.replace(/(\D+)(-?\d*)(\.\D+)$/, function(str, m1, m2, m3)
+                  {
+                    if(m2)
+                      var newstr = (Math.abs(+m2) + 1) + "";
+                    else
+                      var newstr = "1";
+                    return m1 + newstr + m3;
+                  });
+                }
+                else
+                {
+                  fs.writeFile('uploads/'+filename, data.file, function(err, fdata)
+                  {
+                    if(err) return;
+                    connection.query("INSERT INTO `irc_uploads` (nick,filename,hash,time) VALUES ?", [[[data.auth.nick, filename, digest, getTime()]]], function(err, result)
+                    {
+                      socket.emit('file',{"url": config.imgurl+filename});
+                    });
+                  });
+                  //cont = true;
+                }
+              });
+            //}
+          }
+        }
       });
     }
   });

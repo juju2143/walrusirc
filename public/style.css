@@ -149,3 +149,13 @@ body
 {
   text-align: center;
 }
+
+.msgbody
+{
+  white-space: pre-wrap;
+}
+
+.picture
+{
+  max-height: 50px;
+}

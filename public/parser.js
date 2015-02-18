@@ -12,9 +12,11 @@ function parseLinks(text,nav)
   if (!text || text === null || text === undefined){
     return;
   }
+  text = text.replace(/http:\/\/img.codewalr\.us\//g,"\x01img.codewalr.us/");
   text = text.replace(/http:\/\/codewalr\.us\//g,"\x01codewalr.us/");
   text = text.replace(RegExp("(^|.)(((f|ht)(tp|tps):\/\/)[^\\s\x02\x03\x0f\x16\x1d\x1f]*)","g"),'$1<a target="_blank" href="$2"'+(nav?' class="navbar-link"':'')+'>$2</a>');
   text = text.replace(RegExp("(^|\\s)(www\\.[^\\s\x02\x03\x0f\x16\x1d\x1f]*)","g"),'$1<a target="_blank" href="http://$2"'+(nav?' class="navbar-link"':'')+'>$2</a>');
+  text = text.replace(RegExp("(^|.)\x01(img.codewalr.us\/[^\\s\x02\x03\x0f\x16\x1d\x1f]*)","g"),'$1<a target="_top" href="http://$2"'+(nav?' class="navbar-link"':'')+'><img src="http://$2" class="picture" /></a>');
   text = text.replace(RegExp("(^|.)\x01([^\\s\x02\x03\x0f\x16\x1d\x1f]*)","g"),'$1<a target="_top" href="http://$2"'+(nav?' class="navbar-link"':'')+'>http://$2</a>');
   return text;
 }

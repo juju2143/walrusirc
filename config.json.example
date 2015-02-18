@@ -11,5 +11,7 @@
   "network": 1,
   "key": "Encrypt key from checkLogin.php here",
   "checkLoginURL": "http://example.com/checkLogin.php",
-  "maxBacklog": 86400
+  "maxBacklog": 86400,
+  "imgurl": "http://img.example.com/",
+  "fileLimit": 131072
 }
