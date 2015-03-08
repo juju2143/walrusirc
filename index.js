@@ -37,10 +37,17 @@ var linenum = fs.readFileSync(config.curid, "utf-8");
 
 function isAuthed(auth)
 {
-  var hash = crypto.createHmac('sha512', [config.network,config.key].join(""));
-  hash.update(auth.nick);
-  var digest = hash.digest('hex');
-  return digest === auth.signature;
+  try
+  {
+    var hash = crypto.createHmac('sha512', [config.network,config.key].join(""));
+    hash.update(auth.nick);
+    var digest = hash.digest('hex');
+    return digest === auth.signature;
+  }
+  catch(e)
+  {
+    return false;
+  }
 }
 
 function getTime()
