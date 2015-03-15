@@ -40,10 +40,14 @@ function isAuthed(auth)
   try
   {
     var sig = auth.signature.split("|");
-    var hash = crypto.createHmac('sha512', [config.network,config.key,sig[0]].join(""));
-    hash.update(auth.nick);
-    var digest = hash.digest('hex');
-    return digest === sig[1];
+    if(sig[0] > getTime()-86400)
+    {
+      var hash = crypto.createHmac('sha512', [config.network,config.key,sig[0]].join(""));
+      hash.update(auth.nick);
+      var digest = hash.digest('hex');
+      return digest === sig[1];
+    }
+    else return false;
   }
   catch(e)
   {
