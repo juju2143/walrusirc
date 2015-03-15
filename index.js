@@ -39,10 +39,11 @@ function isAuthed(auth)
 {
   try
   {
-    var hash = crypto.createHmac('sha512', [config.network,config.key].join(""));
+    var sig = auth.signature.split("|");
+    var hash = crypto.createHmac('sha512', [config.network,config.key,sig[0]].join(""));
     hash.update(auth.nick);
     var digest = hash.digest('hex');
-    return digest === auth.signature;
+    return digest === sig[1];
   }
   catch(e)
   {
