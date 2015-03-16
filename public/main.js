@@ -19,7 +19,7 @@ $.fn.insertText = function(text)
 
 function scroll()
 {
-  $("body").animate({scrollTop: $(document).height()-$(window).height()}, 200);
+  $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
 }
 
 function color_of(name)
