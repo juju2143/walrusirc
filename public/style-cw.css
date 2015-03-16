@@ -27,6 +27,11 @@ body
   overflow: hidden;
 }
 
+.navbar-link
+{
+  color: #555;
+}
+
 .navbar
 {
   min-height:24px !important;
