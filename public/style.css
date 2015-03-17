@@ -27,7 +27,7 @@ body
 
 .navbar-link
 {
-  color: #555;
+  color: #555 !important;
 }
 
 .navbar
