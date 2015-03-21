@@ -38,7 +38,7 @@ function msg(nick, message, timestamp)
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
-           + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
+           + /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/
            + "</td><td class=\"msgbody\">"
            + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
@@ -57,7 +57,7 @@ function action(nick, message, timestamp)
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
-           + $("<div/>").text(nick.replace(/\s/g,"\xa0")).html()
+           + /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/
            + "</span> "
            + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
@@ -323,6 +323,11 @@ $("#send").click(function(e)
             Derpy();
           };
           fs.src = "http://juju2143.ca/mousefly.js";
+          document.head.appendChild(fs);
+          break;
+        case 'walrii':
+          var fs = document.createElement("script");
+          fs.src = "http://quantuminfinity.net/WalriiHack/WalriiHack.js";
           document.head.appendChild(fs);
           break;
       }
