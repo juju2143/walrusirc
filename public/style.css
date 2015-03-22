@@ -15,8 +15,8 @@ body
 .navbar-brand, .navbar-nav li a
 {
   height: 30px;
-  padding-top:4px !important;
-  padding-bottom:8px !important;
+  padding-top:4px;
+  padding-bottom:8px;
 }
 
 .navbar-text
@@ -25,14 +25,14 @@ body
   margin-bottom: 8px;
 }
 
-.navbar-link
+.navbar-default .navbar-link
 {
-  color: #555 !important;
+  color: #555;
 }
 
 .navbar
 {
-  min-height:30px !important;
+  min-height:30px;
 }
 
 .timestamp { color: gray; }

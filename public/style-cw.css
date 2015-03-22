@@ -15,8 +15,8 @@ body
 .navbar-brand, .navbar-nav li a
 {
   height: 24px;
-  padding-top:0px !important;
-  padding-bottom:0px !important;
+  padding-top:0px;
+  padding-bottom:0px;
 }
 
 .navbar-text
@@ -27,14 +27,14 @@ body
   overflow: hidden;
 }
 
-.navbar-link
+.navbar-default .navbar-link
 {
-  color: #555 !important;
+  color: #555;
 }
 
 .navbar
 {
-  min-height:24px !important;
+  min-height:24px;
 }
 
 .navbar-right
