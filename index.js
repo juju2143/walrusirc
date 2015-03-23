@@ -98,7 +98,7 @@ io.on('connection', function(socket)
       socket.emit('scroll',"");
     });
 
-    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields)
+    connection.query('SELECT * FROM irc_channels WHERE chan = ?', [config.channel], function(err, rows, fields)
     {
       if(err) return;
       socket.emit('topics',rows[0]);
@@ -120,7 +120,7 @@ io.on('connection', function(socket)
       socket.emit('scroll',"");
     });
 
-    connection.query('SELECT * FROM irc_topics WHERE chan = ?', [config.channel], function(err, rows, fields)
+    connection.query('SELECT * FROM irc_channels WHERE chan = ?', [config.channel], function(err, rows, fields)
     {
       if(err) return;
       socket.emit('topics',rows[0]);
