@@ -1,0 +1,11 @@
+[Unit]
+Description=WalrusIRC
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/walrusirc
+ExecStart=/usr/local/bin/npm start
+User=walrusirc
+
+[Install]
+WantedBy=multi-user.target

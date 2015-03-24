@@ -75,7 +75,15 @@ io.on('connection', function(socket)
       {
         for(i=0;i<rows.length;i++)
         {
-          settings[rows[i].name] = JSON.parse(rows[i].value);
+          switch(rows[i].type)
+          {
+            case 3:
+            case 5:
+              settings[rows[i].name] = JSON.parse(rows[i].value);
+              break;
+            default:
+              settings[rows[i].name] = rows[i].value;
+          }
         }
       }
       settings.fileLimit = config.fileLimit;
