@@ -103,7 +103,14 @@ io.on('connection', function(socket)
           socket.emit(rows[i].type,rows[i]);
         }
       }
-      socket.emit('scroll',"");
+      if(data.lines > 1)
+      {
+        socket.emit('scrollforce',"");
+      }
+      else
+      {
+        socket.emit('scroll',"");
+      }
     });
 
     connection.query('SELECT * FROM irc_channels WHERE chan = ?', [config.channel], function(err, rows, fields)

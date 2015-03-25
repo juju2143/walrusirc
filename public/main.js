@@ -199,6 +199,12 @@ socket.on('topics', function(data)
 
 socket.on('scroll', function(data)
 {
+  if($(document).height()-$(document).scrollTop()-$(window).height() <= $("#messages tr:last").height()+1)
+    scroll();
+});
+
+socket.on('scrollforce', function(data)
+{
   scroll();
 });
 
@@ -337,6 +343,7 @@ $("#send").click(function(e)
       socket.emit('message', {message: message, auth: auth, action: 0});      
     }
     $("#inputmsg").val("");
+    scroll();
   }
 });
 
