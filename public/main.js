@@ -98,7 +98,8 @@ function isValidDate(d)
   return !isNaN(d.getTime());
 }
 
-var socket = io();
+var p = window.location.pathname;
+var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});
 
 loadOptions();
 socket.emit('settings', {});
@@ -369,7 +370,7 @@ $('#view-logs').click(function()
   var stamp = new Date(Date.parse($("#logs-date").val()));
   if(isValidDate(stamp))
   {
-    location.replace("/logs/0/"+stamp.getUTCFullYear()+"/"+(stamp.getUTCMonth()+1)+"/"+stamp.getUTCDate());
+    location.replace("logs/0/"+stamp.getUTCFullYear()+"/"+(stamp.getUTCMonth()+1)+"/"+stamp.getUTCDate());
   }
 });
 

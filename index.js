@@ -63,7 +63,7 @@ function getTime()
 io.on('connection', function(socket)
 {
   var ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
-  var host = socket.request.headers['host'];
+  var referer = socket.request.headers['referer'] || "THE GAME";
 
   socket.on('settings', function(data)
   {
@@ -155,7 +155,7 @@ io.on('connection', function(socket)
   {
     var time = Math.floor(new Date().getTime()/1000);
     var hash = crypto.createHmac('sha512', [config.key,time,config.network].join(""));
-    hash.update("http://"+host+"/");
+    hash.update(referer);
     var digest = hash.digest('hex');
     socket.emit('auth', {checkLoginURL: config.checkLoginURL+"?sid="+digest+"|"+time+"&network="+config.network+"&jsoncallback=?"});
   });
