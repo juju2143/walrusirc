@@ -5,6 +5,7 @@ body
   font-size: 9pt;
   font-family: Tahoma, Arial, sans-serif;
   /*background-color: #E7EAEF;*/
+  overflow-x: hidden;
 }
 
 #optionsmenu
@@ -35,7 +36,13 @@ body
   min-height:30px;
 }
 
-.timestamp { color: gray; }
+.timestamp
+{
+  color: gray;
+  position: absolute;
+  right: 0;
+}
+
 .c0 { color: white; }
 .c1 { color: black; }
 .c2 { color: blue; }

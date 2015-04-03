@@ -5,6 +5,7 @@ body
   font-size: 8pt;
   font-family: Arial, helvetica, sans-serif;
   background-color: #E7EAEF;
+  overflow-x: hidden;
 }
 
 #optionsmenu
@@ -41,7 +42,13 @@ body
 {
   font-size: 12pt;
 }
-.timestamp { color: gray; }
+.timestamp
+{
+  color: gray;
+  position: absolute;
+  right: 0;
+}
+
 .c0 { color: white; }
 .c1 { color: black; }
 .c2 { color: blue; }
