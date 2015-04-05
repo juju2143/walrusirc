@@ -19,7 +19,8 @@ $.fn.insertText = function(text)
 
 function scroll()
 {
-  $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
+  if ($(document).height() >= $(window).height())
+    $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
 }
 
 function scrollSmart()
