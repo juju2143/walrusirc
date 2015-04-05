@@ -38,7 +38,7 @@ function color_of(name)
   return colors[sum%colors.length];
 }
 
-function msg(nick, message, timestamp)
+function msg(nick, message, timestamp, scrollFlag)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
@@ -55,10 +55,19 @@ function msg(nick, message, timestamp)
     newDay(stamp);
   laststamp = stamp;
   $("#messages").append(text);
-  scrollSmart();
+  switch(scrollFlag)
+  {
+    case 'normal':
+      scrollSmart();
+      break;
+    case 'force':
+      scroll();
+      break;
+    default:
+  }
 }
 
-function action(nick, message, timestamp)
+function action(nick, message, timestamp, scrollFlag)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
@@ -75,7 +84,16 @@ function action(nick, message, timestamp)
     newDay(stamp);
   laststamp = stamp;
   $("#messages").append(text);
-  scrollSmart();
+  switch(scrollFlag)
+  {
+    case 'normal':
+      scrollSmart();
+      break;
+    case 'force':
+      scroll();
+      break;
+    default:
+  }
 }
 
 function newDay(timestamp)
@@ -119,7 +137,7 @@ socket.on('message', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  msg(data.name1, data.message, data.time);
+  msg(data.name1, data.message, data.time, data.scroll);
   lines[lines.length] = data;
   if(data.name1 == auth.nick && data.Online == 1)
     readline[readline.length] = data;
@@ -131,7 +149,7 @@ socket.on('action', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, data.message, data.time);
+  action(data.name1, data.message, data.time, data.scroll);
   lines[lines.length] = data;
   if(data.name1 == auth.nick && data.Online == 1)
     readline[readline.length] = data;
@@ -143,7 +161,7 @@ socket.on('topic', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has changed the topic to "+data.message, data.time);
+  action(data.name1, "has changed the topic to "+data.message, data.time, data.scroll);
   $('#topic').html(parseMessage(data.message,true));
   lines[lines.length] = data;
 });
@@ -153,7 +171,7 @@ socket.on('join', function(data)
   if(data.line_number)
     curid = data.line_number;
   if(data.Online != 1)
-    action(data.name1, "has joined the channel", data.time);
+    action(data.name1, "has joined the channel", data.time, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -163,7 +181,7 @@ socket.on('part', function(data)
   if(data.line_number)
     curid = data.line_number;
   if(data.Online != 1)
-    action(data.name1, "has left the channel", data.time);
+    action(data.name1, "has left the channel", data.time, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -172,7 +190,7 @@ socket.on('quit', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has quit IRC ("+data.message+")", data.time);
+  action(data.name1, "has quit IRC ("+data.message+")", data.time, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -181,7 +199,7 @@ socket.on('kick', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time);
+  action(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -190,7 +208,7 @@ socket.on('mode', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "set mode "+data.message, data.time);
+  action(data.name1, "set mode "+data.message, data.time, data.scroll);
   lines[lines.length] = data;
 });
 
@@ -198,7 +216,7 @@ socket.on('nick', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has changed their nick to "+data.name2, data.time);
+  action(data.name1, "has changed their nick to "+data.name2, data.time, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });

@@ -100,7 +100,20 @@ io.on('connection', function(socket)
       {
         for(i=rows.length-1;i>=0;i--)
         {
-          socket.emit(rows[i].type,rows[i]);
+          var row = rows[i];
+          row.scroll = '';
+          if(rows.length == 1)
+          {
+            row.scroll = 'normal';
+          }
+          else
+          {
+            if(i > 0)
+              row.scroll = 'no';
+            else
+              row.scroll = 'force';
+          }
+          socket.emit(row.type,row);
         }
       }
     });
@@ -121,7 +134,20 @@ io.on('connection', function(socket)
       {
         for(i=rows.length-1;i>=0;i--)
         {
-          socket.emit(rows[i].type,rows[i]);
+          var row = rows[i];
+          row.scroll = '';
+          if(rows.length == 1)
+          {
+            row.scroll = 'normal';
+          }
+          else
+          {
+            if(i > 0)
+              row.scroll = 'no';
+            else
+              row.scroll = 'force';
+          }
+          socket.emit(rows[i].type,row);
         }
       }
     });
@@ -261,7 +287,20 @@ fs.watch(config.curid, function(event, filename)
       {
         for(i=0;i<rows.length;i++)
         {
-          io.sockets.emit(rows[i].type,rows[i]);
+          var row = rows[i];
+          row.scroll = '';
+          if(rows.length == 1)
+          {
+            row.scroll = 'normal';
+          }
+          else
+          {
+            if(i > 0)
+              row.scroll = 'no';
+            else
+              row.scroll = 'force';
+          }
+          io.sockets.emit(rows[i].type,row);
         }
       }
     });
