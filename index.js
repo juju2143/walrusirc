@@ -103,14 +103,6 @@ io.on('connection', function(socket)
           socket.emit(rows[i].type,rows[i]);
         }
       }
-      if(data.lines > 1)
-      {
-        socket.emit('scrollforce',"");
-      }
-      else
-      {
-        socket.emit('scroll',"");
-      }
     });
 
     connection.query('SELECT * FROM irc_channels WHERE chan = ?', [config.channel], function(err, rows, fields)
@@ -132,7 +124,6 @@ io.on('connection', function(socket)
           socket.emit(rows[i].type,rows[i]);
         }
       }
-      socket.emit('scroll',"");
     });
 
     connection.query('SELECT * FROM irc_channels WHERE chan = ?', [config.channel], function(err, rows, fields)
@@ -273,7 +264,6 @@ fs.watch(config.curid, function(event, filename)
           io.sockets.emit(rows[i].type,rows[i]);
         }
       }
-      io.sockets.emit('scroll',"");
     });
     linenum = line;
   }

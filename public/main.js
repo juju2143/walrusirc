@@ -22,6 +22,12 @@ function scroll()
   $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
 }
 
+function scrollSmart()
+{
+  if($(document).height()-$(document).scrollTop()-$(window).height() <= $("#messages tr:last").height()+1)
+    scroll()
+}
+
 function color_of(name)
 {
   var colors = [19, 20, 22, 24, 25, 26, 27, 28, 29];
@@ -48,6 +54,7 @@ function msg(nick, message, timestamp)
     newDay(stamp);
   laststamp = stamp;
   $("#messages").append(text);
+  scrollSmart();
 }
 
 function action(nick, message, timestamp)
@@ -67,6 +74,7 @@ function action(nick, message, timestamp)
     newDay(stamp);
   laststamp = stamp;
   $("#messages").append(text);
+  scrollSmart();
 }
 
 function newDay(timestamp)
@@ -75,6 +83,7 @@ function newDay(timestamp)
            + $("<span/>").text(timestamp.toLocaleDateString()).html()
            + "</td></tr>";
   $("#messages").append(text);
+  scrollSmart();
 }
 
 function loadOptions()
@@ -196,17 +205,6 @@ socket.on('nick', function(data)
 socket.on('topics', function(data)
 {
   $('#topic').html(parseMessage(data.topic,true));
-});
-
-socket.on('scroll', function(data)
-{
-  if($(document).height()-$(document).scrollTop()-$(window).height() <= $("#messages tr:last").height()+1)
-    scroll();
-});
-
-socket.on('scrollforce', function(data)
-{
-  scroll();
 });
 
 socket.on('reconnect', function(num)
