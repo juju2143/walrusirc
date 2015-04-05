@@ -418,3 +418,10 @@ $('#inputmsg').on("drop", function(e)
 	if(/^image\//.test(file.type) && file.size <= (settings.fileLimit||131072))
 		reader.readAsArrayBuffer(file);
 });
+
+var resizeTimer;
+$(window).resize(function()
+{             
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(scroll, 100);
+});
