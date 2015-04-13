@@ -1,10 +1,17 @@
+/*
+Name: Classic
+Description: WalrusIRC's original theme
+Author: Juju
+URL: http://codewalr.us
+Version: 1.0
+*/
 body
 {
   margin: 0;
-  padding: 25px 0px 10px 0px;
-  font-size: 8pt;
-  font-family: Arial, helvetica, sans-serif;
-  background-color: #E7EAEF;
+  padding: 34px 0px 16px 0px;
+  font-size: 9pt;
+  font-family: Tahoma, Arial, sans-serif;
+  /*background-color: #E7EAEF;*/
   overflow-x: hidden;
 }
 
@@ -15,17 +22,15 @@ body
 
 .navbar-brand, .navbar-nav li a
 {
-  height: 24px;
-  padding-top:0px;
-  padding-bottom:0px;
+  height: 30px;
+  padding-top:4px;
+  padding-bottom:8px;
 }
 
 .navbar-text
 {
-  margin-top: 4px;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .navbar-default .navbar-link
@@ -35,13 +40,9 @@ body
 
 .navbar
 {
-  min-height:24px;
+  min-height:30px;
 }
 
-.navbar-right
-{
-  font-size: 12pt;
-}
 .timestamp
 {
   color: gray;
@@ -96,27 +97,27 @@ body
 
 ::-webkit-scrollbar-track
 {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  border-radius: 10px;
-  background-color: #CCC;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #CCC;
 }
 
 ::-webkit-scrollbar
 {
-  width: 12px;
-  background-color: #CCC;
+	width: 12px;
+	background-color: #CCC;
 }
 
 ::-webkit-scrollbar-thumb
 {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-  background-color: #555;
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
 }
 
 .table-striped > tbody > tr:nth-child(odd)
 {
-  background-color: #D6DBE1;
+  /*background-color: #D6DBE1;*/
 }
 
 .name
@@ -150,24 +151,12 @@ body
 #userlist>li>a
 {
   height: 1.5em;
-  font-size: 8pt;
+  font-size: 9pt;
 }
 
 .navbar-fixed-bottom
 {
   z-index: 0;
-}
-
-.navbar-fixed-bottom > .input-group-btn > .btn, .navbar-fixed-bottom > .form-control
-{
-  font-size: 9pt;
-  height: 30px;
-}
-
-.navbar-fixed-bottom > .input-group-btn > .btn
-{
-  font-size: 10pt;
-  border-radius: 0px;
 }
 
 .navbar-brand img:hover
