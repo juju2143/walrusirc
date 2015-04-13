@@ -112,6 +112,9 @@ function loadOptions()
     scrollbackLines = localStorage.scrollbackLines?parseInt(localStorage.scrollbackLines):100;
     $("#scrollback-lines").val(scrollbackLines);
     $("#smileys-enable").prop('checked', localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false);
+    if(typeof(Storage) !== "undefined")
+      if(localStorage.theme)
+        loadTheme(localStorage.theme);
   }
   else
   {
@@ -126,12 +129,21 @@ function isValidDate(d)
   return !isNaN(d.getTime());
 }
 
+function loadTheme(t)
+{
+  if(typeof(Storage) !== "undefined")
+    localStorage.theme = t;
+  $("#theme").prop("href", "themes/"+t+".css");
+}
+
 var p = window.location.pathname;
 var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});
 
-loadOptions();
-socket.emit('settings', {});
-socket.emit('auth', {});
+$(document).ready(function(){
+  loadOptions();
+  socket.emit('settings', {});
+  socket.emit('auth', {});
+});
 
 socket.on('message', function(data)
 {

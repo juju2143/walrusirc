@@ -161,7 +161,7 @@ body
 
 .navbar-brand img:hover
 {
-  content: url('logohover.gif');
+  content: url('../logohover.gif');
 }
 
 #smileylist
