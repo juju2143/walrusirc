@@ -120,6 +120,12 @@ function loadOptions()
   {
     $("#optionsmenu").html("<li>Sorry, your browser does not support web storage...</li>");
   }
+  $.getJSON("themes/themes.json", function(data)
+  {
+    data.forEach(function(i){
+      $("#themesmenu").append('<li><a href="#" onclick="loadTheme(\''+i.file+'\');scroll()">'+i.name+'</a></li>');
+    });
+  });
 }
 
 function isValidDate(d)
