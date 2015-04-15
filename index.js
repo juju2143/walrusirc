@@ -87,6 +87,8 @@ io.on('connection', function(socket)
         }
       }
       settings.fileLimit = config.fileLimit;
+      settings.checkLoginURL = config.checkLoginURL;
+      settings.network = config.network;
       socket.emit('settings',settings);
     });
   });

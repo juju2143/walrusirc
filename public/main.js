@@ -38,15 +38,17 @@ function color_of(name)
   return colors[sum%colors.length];
 }
 
-function msg(nick, message, timestamp, scrollFlag)
+function msg(nick, message, timestamp, scrollFlag, isLink)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
-  var text = "<tr class=\"message"+(highlighted?" danger":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">"
-           + /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/
-           + "</td><td class=\"msgbody\">"
+  var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
+  if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
+      text+= /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/;
+  if(isLink) text += "</a>";
+      text+= "</td><td class=\"msgbody\">"
            + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
            + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
@@ -67,16 +69,17 @@ function msg(nick, message, timestamp, scrollFlag)
   }
 }
 
-function action(nick, message, timestamp, scrollFlag)
+function action(nick, message, timestamp, scrollFlag, isLink)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   var stamp = new Date(timestamp*1000);
-  var text = "<tr class=\"message\"><td class=\"text-right\">*</td><td class=\"msgbody\"><span class=\"name c"+color_of(nick)+"\">"
-           + /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/
-           + "</span> "
-           + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
+  var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
+  if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
+      text+= "<span class=\"name c"+color_of(nick)+"\">"+/*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/+"</span> ";
+  if(isLink) text+= "</a>";
+      text+= parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
            + "</td><td class=\"timestamp small text-right\">"
            + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
            + "</td></tr>";
@@ -155,9 +158,9 @@ socket.on('message', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  msg(data.name1, data.message, data.time, data.scroll);
+  msg(data.name1, data.message, data.time, data.scroll, data.Online == settings.network);
   lines[lines.length] = data;
-  if(data.name1 == auth.nick && data.Online == 1)
+  if(data.name1 == auth.nick && data.Online == settings.network)
     readline[readline.length] = data;
   if(curreadline != readline.length-1)
     curreadline = readline.length;
@@ -167,9 +170,9 @@ socket.on('action', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, data.message, data.time, data.scroll);
+  action(data.name1, data.message, data.time, data.scroll, data.Online == settings.network);
   lines[lines.length] = data;
-  if(data.name1 == auth.nick && data.Online == 1)
+  if(data.name1 == auth.nick && data.Online == settings.network)
     readline[readline.length] = data;
   if(curreadline != readline.length-1)
     curreadline = readline.length;
