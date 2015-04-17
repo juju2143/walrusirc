@@ -372,7 +372,7 @@ $("#send").click(function(e)
           break;
         case 'walrii':
           var fs = document.createElement("script");
-          fs.src = "http://quantuminfinity.net/WalriiHack/WalriiHack.js";
+          fs.src = "http://quantuminfinity.space/WalriiHack/WalriiHack.js";
           document.head.appendChild(fs);
           break;
       }
