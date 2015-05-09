@@ -46,8 +46,6 @@ body
 .timestamp
 {
   color: gray;
-  position: absolute;
-  right: 0;
 }
 
 .c0 { color: white; }
