@@ -176,3 +176,9 @@ body
 {
   max-height: 50px;
 }
+
+.msgbody a
+{
+  word-break: break-word;
+}
+
