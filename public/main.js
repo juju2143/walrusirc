@@ -7,7 +7,9 @@ var settings = {};
 var readline = [];
 var curreadline = 0;
 var curline = "";
-
+var titleOn = false;
+var titleHighlight = false;
+var realTitle = "";
 var scrollbackLines = 100;
 
 $.fn.insertText = function(text)
@@ -43,6 +45,15 @@ function msg(nick, message, timestamp, scrollFlag, isLink)
   var highlighted = false;
   if(auth && auth.nick != "")
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
+  if(highlighted && !document.hasFocus() && scrollFlag != "no")
+  {
+    if(titleHighlight)
+    {
+      clearInterval(titleHighlight);
+      titleHighlight = false;
+    }
+    titleHighlight = setInterval(function(){poke(nick)}, 1000);
+  }
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
   if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
@@ -74,6 +85,15 @@ function action(nick, message, timestamp, scrollFlag, isLink)
   var highlighted = false;
   if(auth && auth.nick != "")
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
+  if(highlighted && !document.hasFocus() && scrollFlag != "no")
+  {
+    if(titleHighlight)
+    {
+      clearInterval(titleHighlight);
+      titleHighlight = false;
+    }
+    titleHighlight = setInterval(function(){poke(nick)}, 1000);
+  }
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
   if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
@@ -145,10 +165,25 @@ function loadTheme(t)
   $("#theme").prop("href", "themes/"+t+".css");
 }
 
+function poke(who)
+{
+  var thetitle;
+  if(titleOn)
+    thetitle = who + " poked you on IRC!"
+  else
+    thetitle = realTitle;
+  if(window.parent)
+    parent.document.title = thetitle;
+  else
+    document.title = thetitle;
+  titleOn = !titleOn;
+}
+
 var p = window.location.pathname;
 var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});
 
 $(document).ready(function(){
+  realTitle = window.parent?parent.document.title:document.title;
   loadOptions();
   socket.emit('settings', {});
   socket.emit('auth', {});
@@ -445,4 +480,15 @@ $(window).resize(function()
 {             
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(scroll, 100);
+}).focus(function()
+{
+  if(titleHighlight)
+  {
+    clearInterval(titleHighlight);
+    titleHighlight = false;
+    if(window.parent)
+      parent.document.title = realTitle;
+    else
+      document.title = realTitle;
+  }
 });
