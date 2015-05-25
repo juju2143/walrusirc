@@ -169,13 +169,9 @@ function poke(who)
 {
   var thetitle;
   if(titleOn)
-    thetitle = who + " poked you on IRC!"
+    top.document.title = who + " poked you on IRC!"
   else
-    thetitle = realTitle;
-  if(window.parent)
-    parent.document.title = thetitle;
-  else
-    document.title = thetitle;
+    top.document.title = realTitle;
   titleOn = !titleOn;
 }
 
@@ -183,7 +179,7 @@ var p = window.location.pathname;
 var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});
 
 $(document).ready(function(){
-  realTitle = window.parent?parent.document.title:document.title;
+  realTitle = top.document.title;
   loadOptions();
   socket.emit('settings', {});
   socket.emit('auth', {});
@@ -486,9 +482,6 @@ $(window).resize(function()
   {
     clearInterval(titleHighlight);
     titleHighlight = false;
-    if(window.parent)
-      parent.document.title = realTitle;
-    else
-      document.title = realTitle;
+    top.document.title = realTitle;
   }
 });
