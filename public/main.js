@@ -425,13 +425,13 @@ $("#send").click(function(e)
           {
             Derpy();
           };
-          fs.src = "http://juju2143.ca/mousefly.js";
-          document.head.appendChild(fs);
+          fs.src = "lib/derpy/mousefly.js";
+          document.body.appendChild(fs);
           break;
         case 'walrii':
           var fs = document.createElement("script");
-          fs.src = "http://quantuminfinity.space/WalriiHack/WalriiHack.js";
-          document.head.appendChild(fs);
+          fs.src = "lib/WalriiHack.js";
+          document.body.appendChild(fs);
           break;
       }
     }

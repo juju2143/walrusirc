@@ -1,0 +1,3 @@
+[submodule "public/lib/derpy"]
+	path = public/lib/derpy
+	url = https://github.com/juju2143/derpy.git
