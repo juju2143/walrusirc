@@ -11,6 +11,7 @@ var titleOn = false;
 var titleHighlight = false;
 var realTitle = "";
 var scrollbackLines = 100;
+var notificationsEnabled = false;
 
 $.fn.insertText = function(text)
 {
@@ -53,6 +54,13 @@ function msg(nick, message, timestamp, scrollFlag, isLink)
       titleHighlight = false;
     }
     titleHighlight = setInterval(function(){poke(nick)}, 1000);
+    if(notificationsEnabled)
+    {
+      var n = new Notification(nick, {body: message, tag: "WalrusIRCMessage", icon: "logo.png"});
+      n.onshow = function () { 
+        setTimeout(n.close.bind(n), 15000); 
+      }
+    }
   }
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
@@ -93,6 +101,13 @@ function action(nick, message, timestamp, scrollFlag, isLink)
       titleHighlight = false;
     }
     titleHighlight = setInterval(function(){poke(nick)}, 1000);
+    if(notificationsEnabled)
+    {
+      var n = new Notification(nick, {body: message, tag: "WalrusIRCMessage", icon: "logo.png"});
+      n.onshow = function () { 
+        setTimeout(n.close.bind(n), 15000); 
+      }
+    }
   }
   var stamp = new Date(timestamp*1000);
   var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
@@ -135,9 +150,21 @@ function loadOptions()
     scrollbackLines = localStorage.scrollbackLines?parseInt(localStorage.scrollbackLines):100;
     $("#scrollback-lines").val(scrollbackLines);
     $("#smileys-enable").prop('checked', localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false);
-    if(typeof(Storage) !== "undefined")
-      if(localStorage.theme)
-        loadTheme(localStorage.theme);
+    $("#notifications-enable").prop('checked', localStorage.notifications?JSON.parse(localStorage.notifications):false);
+    if(localStorage.theme)
+      loadTheme(localStorage.theme);
+    if(localStorage.notifications)
+    {
+      if(window.Notification && Notification.permission !== "granted") {
+        Notification.requestPermission(function (status) {
+          if(Notification.permission !== status) {
+            Notification.permission = status;
+          }
+          if(Notification.permission === "granted") notificationsEnabled = true;
+        });
+      }
+      if(Notification.permission === "granted") notificationsEnabled = true;
+    }
   }
   else
   {
@@ -432,6 +459,27 @@ $('#scrollback-lines').change(function()
 $('#smileys-enable').change(function()
 {
   localStorage.disableSmileys = $('#smileys-enable').is(':checked');
+});
+
+$('#notifications-enable').change(function()
+{
+  localStorage.notifications = $('#notifications-enable').is(':checked');
+  if($('#notifications-enable').is(':checked'))
+  {
+    if(window.Notification && Notification.permission !== "granted") {
+      Notification.requestPermission(function (status) {
+        if(Notification.permission !== status) {
+          Notification.permission = status;
+        }
+        if(Notification.permission === "granted") notificationsEnabled = true;
+      });
+    }
+    if(Notification.permission === "granted") notificationsEnabled = true;
+  }
+  else
+  {
+    notificationsEnabled = false;
+  }
 });
 
 $('#view-logs').click(function()
