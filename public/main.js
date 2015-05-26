@@ -41,7 +41,7 @@ function color_of(name)
   return colors[sum%colors.length];
 }
 
-function msg(nick, message, timestamp, scrollFlag, isLink)
+function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
 {
   var highlighted = false;
   if(auth && auth.nick != "")
@@ -63,61 +63,25 @@ function msg(nick, message, timestamp, scrollFlag, isLink)
     }
   }
   var stamp = new Date(timestamp*1000);
-  var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
-  if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
-      text+= /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/;
-  if(isLink) text += "</a>";
-      text+= "</td><td class=\"msgbody\">"
-           + parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
-           + "</td><td class=\"timestamp small text-right\">"
-           + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
-           + "</td></tr>";
-  if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
-    newDay(stamp);
-  laststamp = stamp;
-  $("#messages").append(text);
-  switch(scrollFlag)
+  if(isAction)
   {
-    case 'normal':
-      scrollSmart();
-      break;
-    case 'force':
-      scroll();
-      break;
-    default:
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
+    if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
+        text+= "<span class=\"name c"+color_of(nick)+"\">"+/*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/+"</span> ";
+    if(isLink) text+= "</a>";
   }
-}
-
-function action(nick, message, timestamp, scrollFlag, isLink)
-{
-  var highlighted = false;
-  if(auth && auth.nick != "")
-    highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
-  if(highlighted && !document.hasFocus() && scrollFlag != "no")
+  else
   {
-    if(titleHighlight)
-    {
-      clearInterval(titleHighlight);
-      titleHighlight = false;
-    }
-    titleHighlight = setInterval(function(){poke(nick)}, 1000);
-    if(notificationsEnabled)
-    {
-      var n = new Notification(nick, {body: message, tag: "WalrusIRCMessage", icon: "logo.png"});
-      n.onshow = function () { 
-        setTimeout(n.close.bind(n), 15000); 
-      }
-    }
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
+    if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
+        text+= /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/;
+    if(isLink) text += "</a>";
+        text+= "</td><td class=\"msgbody\">";
   }
-  var stamp = new Date(timestamp*1000);
-  var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
-  if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
-      text+= "<span class=\"name c"+color_of(nick)+"\">"+/*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/+"</span> ";
-  if(isLink) text+= "</a>";
-      text+= parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
-           + "</td><td class=\"timestamp small text-right\">"
-           + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
-           + "</td></tr>";
+  text+= parseMessage(message, false, localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false)
+       + "</td><td class=\"timestamp small text-right\">"
+       + $("<span/>").text(stamp.toLocaleTimeString().replace(/\s/g,"\xa0")).html()
+       + "</td></tr>";
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
@@ -153,7 +117,7 @@ function loadOptions()
     $("#notifications-enable").prop('checked', localStorage.notifications?JSON.parse(localStorage.notifications):false);
     if(localStorage.theme)
       loadTheme(localStorage.theme);
-    if(localStorage.notifications)
+    if($('#notifications-enable').is(':checked'))
     {
       if(window.Notification && Notification.permission !== "granted") {
         Notification.requestPermission(function (status) {
@@ -216,7 +180,7 @@ socket.on('message', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  msg(data.name1, data.message, data.time, data.scroll, data.Online == settings.network);
+  msg(data.name1, data.message, data.time, false, data.scroll, data.Online == settings.network);
   lines[lines.length] = data;
   if(data.name1 == auth.nick && data.Online == settings.network)
     readline[readline.length] = data;
@@ -228,7 +192,7 @@ socket.on('action', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, data.message, data.time, data.scroll, data.Online == settings.network);
+  msg(data.name1, data.message, data.time, true, data.scroll, data.Online == settings.network);
   lines[lines.length] = data;
   if(data.name1 == auth.nick && data.Online == settings.network)
     readline[readline.length] = data;
@@ -240,7 +204,7 @@ socket.on('topic', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has changed the topic to "+data.message, data.time, data.scroll);
+  msg(data.name1, "has changed the topic to "+data.message, data.time, true, data.scroll);
   $('#topic').html(parseMessage(data.message,true));
   lines[lines.length] = data;
 });
@@ -250,7 +214,7 @@ socket.on('join', function(data)
   if(data.line_number)
     curid = data.line_number;
   if(data.Online != 1)
-    action(data.name1, "has joined the channel", data.time, data.scroll);
+    msg(data.name1, "has joined the channel", data.time, true, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -260,7 +224,7 @@ socket.on('part', function(data)
   if(data.line_number)
     curid = data.line_number;
   if(data.Online != 1)
-    action(data.name1, "has left the channel", data.time, data.scroll);
+    msg(data.name1, "has left the channel", data.time, true, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -269,7 +233,7 @@ socket.on('quit', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has quit IRC ("+data.message+")", data.time, data.scroll);
+  msg(data.name1, "has quit IRC ("+data.message+")", data.time, true, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -278,7 +242,7 @@ socket.on('kick', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time, data.scroll);
+  msg(data.name1, "has kicked "+data.name2+" ("+data.message+")", data.time, true, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
@@ -287,7 +251,7 @@ socket.on('mode', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "set mode "+data.message, data.time, data.scroll);
+  msg(data.name1, "set mode "+data.message, data.time, true, data.scroll);
   lines[lines.length] = data;
 });
 
@@ -295,7 +259,7 @@ socket.on('nick', function(data)
 {
   if(data.line_number)
     curid = data.line_number;
-  action(data.name1, "has changed their nick to "+data.name2, data.time, data.scroll);
+  msg(data.name1, "has changed their nick to "+data.name2, data.time, true, data.scroll);
   socket.emit('userlist', {});
   lines[lines.length] = data;
 });
