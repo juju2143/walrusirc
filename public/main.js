@@ -48,12 +48,15 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
     highlighted = new RegExp("(\\b|\x02|\x03[0-9]{0,2}(,[0-9]{0,2})?|\x0f|\x16|\x1d|\x1f)"+auth.nick+'(\\b|\x02|\x03|\x0f|\x16|\x1d|\x1f)','gi').test(message);
   if(highlighted && !document.hasFocus() && scrollFlag != "no")
   {
-    if(titleHighlight)
+    if($('#notifications-enable').is(':checked'))
     {
-      clearInterval(titleHighlight);
-      titleHighlight = false;
+      if(titleHighlight)
+      {
+        clearInterval(titleHighlight);
+        titleHighlight = false;
+      }
+      titleHighlight = setInterval(function(){poke(nick)}, 1000);
     }
-    titleHighlight = setInterval(function(){poke(nick)}, 1000);
     if(notificationsEnabled)
     {
       var n = new Notification(nick, {body: message, tag: "WalrusIRCMessage", icon: "logo.png"});
