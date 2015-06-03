@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8" />
 <title>Index of /</title>
 </head>
 <body>
@@ -11,6 +12,7 @@
 </tr>
 <tr><th colspan="4"><hr></th></tr>
 <?php
+error_reporting(0);
 $config = json_decode(file_get_contents("../config.json"));
 $mysql = mysqli_connect($config->mysql->host, $config->mysql->user, $config->mysql->password, $config->mysql->database);
 $query = mysqli_query($mysql, "SELECT * FROM irc_uploads ORDER BY filename ASC;");
