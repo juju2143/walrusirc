@@ -92,7 +92,20 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
-  $("#messages").append(text);
+  $("#messages").append(text).find('img').load({sf: scrollFlag}, function(e)
+  {
+    switch(e.sf)
+    {
+      case 'normal':
+        scrollSmart();
+        break;
+      case 'force':
+        scroll();
+        break;
+      default:
+    }
+  });
+
   switch(scrollFlag)
   {
     case 'normal':
