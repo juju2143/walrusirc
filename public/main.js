@@ -12,6 +12,8 @@ var titleHighlight = false;
 var realTitle = "";
 var scrollbackLines = 100;
 var notificationsEnabled = false;
+var previousScrollTop = 0;
+var hasScrolledUp = false;
 
 $.fn.insertText = function(text)
 {
@@ -24,11 +26,13 @@ function scroll()
 {
   if ($(document).height() >= $(window).height())
     $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
+
+  hasScrolledUp = false;
 }
 
 function scrollSmart()
 {
-  if($(document).height()-$(document).scrollTop()-$(window).height() <= $("#messages tr:last").height()+1)
+  if(!hasScrolledUp)
     scroll()
 }
 
@@ -499,4 +503,18 @@ $(window).resize(function()
     titleHighlight = false;
     top.document.title = realTitle;
   }
+}).scroll(function()
+{
+  var st = $(document).scrollTop();
+
+  if (st < previousScrollTop)
+  {
+    hasScrolledUp = true;
+  }
+  else if (st == $(document).height() - $(window).height())
+  {
+    hasScrolledUp = false;
+  }
+
+  previousScrollTop = st;
 });
