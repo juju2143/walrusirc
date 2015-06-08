@@ -200,18 +200,24 @@ function newTip()
     fixed: true,
     tipJoint: "left",
     removeElementsOnHide: true,
+    target: true
+  };
+  Opentip.styles.youtube = {
+    fixed: true,
+    tipJoint: "left",
+    removeElementsOnHide: true,
     hideTrigger: "closeButton",
     target: true
   };
   var href = $(this)[0].href;
   var regexes = [];
   regexes[0] = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/g; // YouTube
-  regexes[1] = /\.(jpe?g|gif|png|bmp)(?:\?[^\"])$/g; // pictures
+  regexes[1] = /\.(jpe?g|gif|png|bmp)$/gi; // pictures
   if(regexes[0].test(href))
   {
     regexes[0].test(href);
     var yid = regexes[0].exec(href)[1];
-    $(this).opentip('<iframe width="256" height="144" src="https://www.youtube.com/embed/'+yid+'" frameborder="0" allowfullscreen></iframe>', {style: "picture"});
+    $(this).opentip('<iframe width="256" height="144" src="https://www.youtube.com/embed/'+yid+'" frameborder="0" allowfullscreen></iframe>', {style: "youtube"});
   }
   else if(regexes[1].test(href))
   {
