@@ -92,7 +92,14 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
   if(stamp.toLocaleDateString() != laststamp.toLocaleDateString())
     newDay(stamp);
   laststamp = stamp;
-  $("#messages").append(text).find('img').load({sf: scrollFlag}, function(e)
+  var line = $(text);
+  $("#messages").append(line);
+  line.click(function()
+  {
+    for(var i=0; i<Opentip.tips.length; i++)
+      Opentip.tips[i].hide();
+  });
+  line.find('img').load({sf: scrollFlag}, function(e)
   {
     switch(e.sf)
     {
@@ -105,6 +112,7 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
       default:
     }
   });
+  line.find('a').each(newTip);
 
   switch(scrollFlag)
   {
@@ -185,6 +193,32 @@ function poke(who)
     top.document.title = realTitle;
   titleOn = !titleOn;
 }
+
+function newTip()
+{
+  Opentip.styles.picture = {
+    fixed: true,
+    tipJoint: "left",
+    removeElementsOnHide: true,
+    hideTrigger: "closeButton",
+    target: true
+  };
+  var href = $(this)[0].href;
+  var regexes = [];
+  regexes[0] = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/g; // YouTube
+  regexes[1] = /\.(jpe?g|gif|png|bmp)(?:\?[^\"])$/g; // pictures
+  if(regexes[0].test(href))
+  {
+    regexes[0].test(href);
+    var yid = regexes[0].exec(href)[1];
+    $(this).opentip('<iframe width="256" height="144" src="https://www.youtube.com/embed/'+yid+'" frameborder="0" allowfullscreen></iframe>', {style: "picture"});
+  }
+  else if(regexes[1].test(href))
+  {
+    $(this).opentip('<img src="'+href+'" style="max-height: 144px; max-width: 512px" />', {style: "picture"});
+  }
+}
+
 
 var p = window.location.pathname;
 var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});
@@ -505,7 +539,7 @@ $('#inputmsg').on("drop", function(e)
 
 var resizeTimer;
 $(window).resize(function()
-{             
+{
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(scroll, 100);
 }).focus(function()
