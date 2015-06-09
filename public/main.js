@@ -14,6 +14,7 @@ var scrollbackLines = 100;
 var notificationsEnabled = false;
 var previousScrollTop = 0;
 var hasScrolledUp = false;
+var animateScroll = false;
 
 $.fn.insertText = function(text)
 {
@@ -25,7 +26,10 @@ $.fn.insertText = function(text)
 function scroll()
 {
   if ($(document).height() >= $(window).height())
-    $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
+    if($('#animateScroll-enable').is(':checked'))
+      $("body,html").animate({scrollTop: $(document).height()-$(window).height()}, 200);
+    else
+      $("body,html").scrollTop($(document).height()-$(window).height());
 
   hasScrolledUp = false;
 }
@@ -143,6 +147,7 @@ function loadOptions()
     $("#scrollback-lines").val(scrollbackLines);
     $("#smileys-enable").prop('checked', localStorage.disableSmileys?JSON.parse(localStorage.disableSmileys):false);
     $("#notifications-enable").prop('checked', localStorage.notifications?JSON.parse(localStorage.notifications):false);
+    $("#animateScroll-enable").prop('checked', localStorage.animateScroll?JSON.parse(localStorage.animateScroll):false);
     if(localStorage.theme)
       loadTheme(localStorage.theme);
     if($('#notifications-enable').is(':checked'))
@@ -518,6 +523,11 @@ $('#notifications-enable').change(function()
   {
     notificationsEnabled = false;
   }
+});
+
+$('#animateScroll-enable').change(function()
+{
+  localStorage.animateScroll = $('#animateScroll-enable').is(':checked');
 });
 
 $('#view-logs').click(function()
