@@ -1,19 +1,25 @@
 var config = require('./config.json');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var http = require('http');
+var server = http.createServer(app);
 var io = require('socket.io')(server);
 var port = config.port || 4200;
 var mysql = require('mysql');
 var fs = require('fs');
 var crypto = require('crypto');
+var bodyParser = require('body-parser');
 
 server.listen(port, function()
 {
   console.log('Server listening at port %d', port);
 });
 
+var connection = mysql.createConnection(config.mysql);
+connection.connect();
+
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/logs/:channel/:year/:month/:day', function(req, res)
 {
@@ -24,16 +30,63 @@ app.get('/logs/:channel/:year/:month/:day', function(req, res)
   });
 });
 
-app.get('*', function(req, res){
+app.post('/admin', function(req, res)
+{
+  var auth = {"nick":req.body.nick,"signature":req.body.signature,"uid":req.body.uid};
+  if(isAuthed(auth))
+  {
+    /*var opreq = http.request('http:'+config.checkLoginURL+"?op&u="+auth.uid+"&nick="+base64_encode(auth.nick), function(opres)
+    {
+      opres.on('data', function(chunk)
+      {*/
+        var group = req.body.group;
+        if(config.admins.indexOf(group) != -1)
+          res.render('admin.ejs', {config: config});
+        else
+        {
+          res.status(403);
+          //res.send("Wrong group: "+group);
+          res.sendFile(__dirname + '/public/403.html');
+        }
+      /*});
+    });
+    opreq.on('error', function(e)
+    {
+      res.status(503);
+      res.sendFile(__dirname + '/public/503.html');
+    });*/
+  }
+  else
+  {
+    res.status(403);
+    //res.send("Bad auth: "+auth);
+    res.sendFile(__dirname + '/public/403.html');
+  }
+});
+
+app.get('*', function(req, res)
+{
   res.status(404);
   res.sendFile(__dirname + '/public/404.html');
 });
 
-var connection = mysql.createConnection(config.mysql);
-
-connection.connect();
+app.use(function(err, req, res, next)
+{
+  res.status(500);
+  res.render('500.ejs', {error: err, stack: err.stack});
+});
 
 var linenum = fs.readFileSync(config.curid, "utf-8");
+
+function base64_encode(str)
+{
+  return new Buffer(str, 'utf8').toString('base64').replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ",");
+}
+
+function base64_decode(str)
+{
+  return new Buffer(str.replace(/-/g, "+").replace(/_/g, "/").replace(/,/g, "="), 'base64').toString('utf8');
+}
 
 function isAuthed(auth)
 {

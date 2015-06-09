@@ -13,5 +13,6 @@
   "checkLoginURL": "//example.com/checkLogin.php",
   "maxBacklog": 86400,
   "imgurl": "http://img.example.com/",
-  "fileLimit": 131072
+  "fileLimit": 131072,
+  "admins": ["Staff"]
 }

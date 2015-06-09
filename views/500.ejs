@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Error 500</title>
+<style>
+body
+{
+  background-color: #D6DBE1;
+  text-align: center;
+  font-family: Arial, helvetica, sans-serif;
+}
+</style>
+<script>
+  console.groupCollapsed("ServerError: <%= error.split("\n")[0] %>");
+<%
+  var lines = stack.split("\n");
+  for(i=0; i<lines.length; i++)
+  {
+%>  console.log("<%= lines[i] %>");
+<%
+  }
+%>  console.groupEnd();
+</script>
+</head>
+<body>
+<h1>500 - Internal Server Error</h1>
+<p><img src="/logo.png" alt="Walrii" /></p>
+<p>Something went wrong, probably due to a fatal error or a server misconfiguration. Please complain to your local administrator.</p>
+</body>
+</html>

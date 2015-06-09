@@ -1,0 +1,85 @@
+<%
+function color_of(name)
+{
+  var colors = [19, 20, 22, 24, 25, 26, 27, 28, 29];
+  sum = 0;
+  for(i=0;i<name.length;i++)
+    sum += name.charCodeAt(i);
+  return colors[sum%colors.length];
+} %>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>walrusirc admin panel</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="//cdn.rawgit.com/vsn4ik/bootstrap-submenu/v1.2.10/dist/css/bootstrap-submenu.min.css" />
+  <link rel="stylesheet" href="//cdn.rawgit.com/enyo/opentip/v2.4.6/css/opentip.css" />
+  <link rel="stylesheet" href="themes/style-cw.css" id="theme" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .editor
+    {
+      width: 100%;
+      height: 150px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header dropdown">
+      <a class="navbar-brand dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
+        <img alt="CodeWalrus" src="logo.png" />
+      </a>
+      <ul class="dropdown-menu" role="menu">
+          <li><a href="http://walrusirc.codewalr.us"><i class="fa fa-arrow-left"></i> Back to chat</a></li>
+          <li><a href="" target="_blank"><i class="fa fa-arrows-alt"></i> Fullscreen</a></li>
+          <li><a href="http://codewalr.us/194" target="_top"><i class="fa fa-question-circle"></i> About / Help</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-submenu">
+            <a data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> Options</a>
+            <ul class="dropdown-menu" role="menu" id="optionsmenu">
+              <li><div class="input-group">
+                <span class="input-group-addon">Logs:</span>
+                <input type="date" id="logs-date" class="form-control" />
+                <span class="input-group-btn"><button type="button" id="view-logs" class="btn btn-default"><i class="fa fa-play"></i></button></span>
+              </div></li>
+            </ul>
+          </li>
+      </ul>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-walrus-navbar-collapse-1">
+      <p id="topic" class="navbar-text">WalrusIRC settings</p>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-bars fa-fw"></i></a>
+          <ul id="userlist" class="dropdown-menu" role="menu">
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<p>config.json</p>
+<div id="configjson" class="editor"><%= JSON.stringify(config); %></div>
+<!--p><button>Apply</button></p-->
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="//cdn.rawgit.com/vsn4ik/bootstrap-submenu/v1.2.10/dist/js/bootstrap-submenu.min.js"></script>
+  <!--script src="//cdnjs.cloudflare.com/ajax/libs/tabcomplete/1.3.1/tabcomplete.js"></script-->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.9/ace.js"></script>
+  <script src="//cdn.jsdelivr.net/opentip/2.4.6/opentip-jquery.min.js"></script>
+  <!--script src="socket.io/socket.io.js"></script-->
+  <script src="parser.js"></script>
+  <!--script src="main.js"></script-->
+  <script>
+    var editor = ace.edit("configjson");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/json");
+  </script>
+</body>
+</html>

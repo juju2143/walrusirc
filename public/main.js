@@ -225,6 +225,20 @@ function newTip()
   }
 }
 
+function admin()
+{
+  $.getJSON(settings.checkLoginURL+"?op&u="+auth.uid+"&nick="+btoa(auth.nick).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ","), function(data)
+  {
+    var form = $('<form action="admin" method="post">'+
+                 '<input type="hidden" name="nick" value="'+auth.nick+'">'+
+                 '<input type="hidden" name="signature" value="'+auth.signature+'">'+
+                 '<input type="hidden" name="uid" value="'+auth.uid+'">'+
+                 '<input type="hidden" name="group" value=\''+data.group+'\'>'+
+                 '</form>');
+    $('body').append(form);
+    form.submit();
+  });
+}
 
 var p = window.location.pathname;
 var socket = io('', {path: p.slice(0,p.lastIndexOf('/')+1)+'socket.io/'});

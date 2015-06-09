@@ -7,10 +7,15 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["omnomirc", "irc", "chat"],
+  "keywords": [
+    "omnomirc",
+    "irc",
+    "chat"
+  ],
   "author": "juju2143",
   "license": "GPL3",
   "dependencies": {
+    "body-parser": "^1.12.4",
     "ejs": "^2.2.3",
     "express": "^4.11.0",
     "mysql": "^2.5.4",
