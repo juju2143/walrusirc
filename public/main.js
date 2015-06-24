@@ -419,7 +419,7 @@ socket.on('settings', function(data)
 
 socket.on('file', function(data)
 {
-  $('#inputmsg').insertText(data.url);
+  $('#inputmsg').insertText(encodeURI(data.url));
 });
 
 $("#inputmsg").keydown(function(e)
