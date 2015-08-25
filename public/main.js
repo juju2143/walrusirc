@@ -103,18 +103,9 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
     for(var i=0; i<Opentip.tips.length; i++)
       Opentip.tips[i].hide();
   });
-  line.find('img').load({sf: scrollFlag}, function(e)
+  line.find('img').load(function(e)
   {
-    switch(e.sf)
-    {
-      case 'normal':
-        scrollSmart();
-        break;
-      case 'force':
-        scroll();
-        break;
-      default:
-    }
+    scrollSmart();
   });
   line.find('a').each(newTip);
 
