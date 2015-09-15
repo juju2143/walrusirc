@@ -76,14 +76,14 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
   var stamp = new Date(timestamp*1000);
   if(isAction)
   {
-    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" "+nick+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
     if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
         text+= "<span class=\"name c"+color_of(nick)+"\">"+/*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/+"</span> ";
     if(isLink) text+= "</a>";
   }
   else
   {
-    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" "+nick+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
     if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
         text+= /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/;
     if(isLink) text += "</a>";
