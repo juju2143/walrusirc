@@ -141,6 +141,10 @@ function loadOptions()
     $("#animateScroll-enable").prop('checked', localStorage.animateScroll?JSON.parse(localStorage.animateScroll):false);
     if(localStorage.theme)
       loadTheme(localStorage.theme);
+    else
+      if(window.frameElement)
+        if($(window.frameElement).data("theme"))
+          loadTheme($(window.frameElement).data("theme"), true);
     if($('#notifications-enable').is(':checked'))
     {
       if(window.Notification && Notification.permission !== "granted") {
@@ -175,11 +179,16 @@ function isValidDate(d)
 
 function loadTheme(t)
 {
-  if(typeof(Storage) !== "undefined")
+  if(typeof(Storage) !== "undefined" && !temp)
     localStorage.theme = t;
   $("#theme").prop("href", "themes/"+t+".css");
 }
 
+function defaultTheme()
+{
+  if(typeof(Storage) !== "undefined" && !temp)
+    localStorage.theme = undefined;
+}
 function poke(who)
 {
   var thetitle;
