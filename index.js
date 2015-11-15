@@ -163,14 +163,14 @@ io.on('connection', function(socket)
           }
           else
           {
-            if(i > 0)
-              row.scroll = 'no';
-            else
-              row.scroll = 'force';
+            row.scroll = 'no';
           }
           socket.emit(row.type,row);
         }
-        socket.emit("last_row",null);
+        if(rows.length > 1)
+        {
+          socket.emit("last_row",null);
+        }
       }
     });
 
