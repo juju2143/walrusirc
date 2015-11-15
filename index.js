@@ -170,6 +170,7 @@ io.on('connection', function(socket)
           }
           socket.emit(row.type,row);
         }
+        socket.emit("last_row",null);
       }
     });
 

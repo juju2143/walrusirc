@@ -205,3 +205,8 @@ body
   width: 100%;
 }
 
+table#messages
+{
+  display: none;
+}
+

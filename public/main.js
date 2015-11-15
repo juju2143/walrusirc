@@ -108,17 +108,6 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
     scrollSmart();
   });
   line.find('a').each(newTip);
-
-  switch(scrollFlag)
-  {
-    case 'normal':
-      scrollSmart();
-      break;
-    case 'force':
-      scroll();
-      break;
-    default:
-  }
 }
 
 function newDay(timestamp)
@@ -346,6 +335,12 @@ socket.on('nick', function(data)
 socket.on('topics', function(data)
 {
   $('#topic').html(parseMessage(data.topic,true));
+});
+
+socket.on('last_row', function(data)
+{
+  $('table#messages').prop('style', 'display: table');
+  scrollSmart();
 });
 
 socket.on('reconnect', function(num)
