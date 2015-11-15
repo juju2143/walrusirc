@@ -350,6 +350,11 @@ socket.on('topics', function(data)
 
 socket.on('reconnect', function(num)
 {
+  if(!auth)
+  {
+    $("#messages").append("<tr class='message'><td></td><td><span style='color: red;'>You are either not authenticated or you are affected by a bug. Click <a href='javascript:localStorage.clear();location.reload();'>here</a> to fix it.</span></td><td></td></tr>");
+    $("body,html").scrollTop($(document).height()-$(window).height());
+  }
   if(curid != 0)
     socket.emit('lastcurid', {curid: curid});
   //if(auth.nick != "")
@@ -594,4 +599,10 @@ $(window).resize(function()
   }
 
   previousScrollTop = st;
+});
+
+$("#clear-storage-btn").click(function()
+{
+  localStorage.clear();
+  location.reload();
 });

@@ -182,3 +182,8 @@ body
   word-break: break-word;
 }
 
+#clear-storage, #clear-storage-btn
+{
+  width: 100%;
+}
+
