@@ -76,14 +76,14 @@ function msg(nick, message, timestamp, isAction, scrollFlag, isLink)
   var stamp = new Date(timestamp*1000);
   if(isAction)
   {
-    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" "+nick+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" user-"+nick.replace(" ","-").toLowerCase()+" action\"><td class=\"text-right\">*</td><td class=\"msgbody\">";
     if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" target=\"_top\">";
         text+= "<span class=\"name c"+color_of(nick)+"\">"+/*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/+"</span> ";
     if(isLink) text+= "</a>";
   }
   else
   {
-    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" "+nick+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
+    var text = "<tr class=\"message"+(highlighted?" danger":"")+((isLink&&nick==auth.nick)?" ownmessage":"")+" user-"+nick.replace(" ","-").toLowerCase()+"\"><td class=\"name text-right c"+color_of(nick)+"\">";
     if(isLink) text += "<a href=\""+settings.checkLoginURL+"?ul="+nick+"\" class=\"c"+color_of(nick)+"\" target=\"_top\">";
         text+= /*$("<div/>").text(*/nick.replace(/\s/g,"\xa0")/*).html()*/;
     if(isLink) text += "</a>";
@@ -460,38 +460,42 @@ $("#send").click(function(e)
 {
   if($("#inputmsg").val() != "")
   {
-    var message = $("#inputmsg").val().trim();
-    var parts = message.split(" ");
-    if(parts[0].substr(0,1) == '/')
+    var messages = $("#inputmsg").val().trim().split("\n");
+    for(i in messages)
     {
-      if(parts[0].substr(1,1) == '/')
+      message = messages[i].trim();
+      var parts = message.split(" ");
+      if(parts[0].substr(0,1) == '/')
       {
-        socket.emit('message', {message: message.substr(1), auth: auth, action: 0});      
+        if(parts[0].substr(1,1) == '/')
+        {
+          socket.emit('message', {message: message.substr(1), auth: auth, action: 0});
+        }
+        else switch(parts[0].substr(1).toLowerCase())
+        {
+          case 'me':
+            socket.emit('message', {message: message.substr(4), auth: auth, action: 1});
+            break;
+          case 'ponies':
+            var fs = document.createElement("script");
+            fs.onload = function()
+            {
+              Derpy();
+            };
+            fs.src = "lib/derpy/mousefly.js";
+            document.body.appendChild(fs);
+            break;
+          case 'walrii':
+            var fs = document.createElement("script");
+            fs.src = "lib/WalriiHack.js";
+            document.body.appendChild(fs);
+            break;
+        }
       }
-      else switch(parts[0].substr(1).toLowerCase())
+      else
       {
-        case 'me':
-          socket.emit('message', {message: message.substr(4), auth: auth, action: 1});
-          break;
-        case 'ponies':
-          var fs = document.createElement("script");
-          fs.onload = function()
-          {
-            Derpy();
-          };
-          fs.src = "lib/derpy/mousefly.js";
-          document.body.appendChild(fs);
-          break;
-        case 'walrii':
-          var fs = document.createElement("script");
-          fs.src = "lib/WalriiHack.js";
-          document.body.appendChild(fs);
-          break;
+        socket.emit('message', {message: message, auth: auth, action: 0});
       }
-    }
-    else
-    {
-      socket.emit('message', {message: message, auth: auth, action: 0});      
     }
     $("#inputmsg").val("");
     scroll();

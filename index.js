@@ -237,15 +237,20 @@ io.on('connection', function(socket)
   {
     if(isAuthed(data.auth) && data.message && data.message != "")
     {
-      var action = data.action==1?"action":"message";
-      var time = getTime();
-      connection.query("UPDATE `irc_users` SET lastMsg = ? WHERE username = ? AND channel = ? AND online = ?", [time, data.auth.nick, config.channel, config.network]);
-      connection.query("INSERT INTO `irc_outgoing_messages` (message,nick,channel,action,fromSource,type) VALUES ?", [[[data.message, data.auth.nick, config.channel, data.action, config.network, action]]]);
-      connection.query("INSERT INTO `irc_lines` (name1,message,type,channel,time,online) VALUES ?", [[[data.auth.nick, data.message, action, config.channel, time, config.network]]], function(err, result)
+      var messages = data.message.trim().split("\n");
+      for(i in messages)
       {
-        if(err) return;
-        fs.writeFileSync(config.curid, result.insertId);
-      });
+        var message = messages[i].trim();
+        var action = data.action==1?"action":"message";
+        var time = getTime();
+        connection.query("UPDATE `irc_users` SET lastMsg = ? WHERE username = ? AND channel = ? AND online = ?", [time, data.auth.nick, config.channel, config.network]);
+        connection.query("INSERT INTO `irc_outgoing_messages` (message,nick,channel,action,fromSource,type) VALUES ?", [[[message, data.auth.nick, config.channel, data.action, config.network, action]]]);
+        connection.query("INSERT INTO `irc_lines` (name1,message,type,channel,time,online) VALUES ?", [[[data.auth.nick, message, action, config.channel, time, config.network]]], function(err, result)
+        {
+          if(err) return;
+          fs.writeFileSync(config.curid, result.insertId);
+        });
+      }
     }
   });
 
