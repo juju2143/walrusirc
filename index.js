@@ -9,6 +9,7 @@ var mysql = require('mysql');
 var fs = require('fs');
 var crypto = require('crypto');
 var bodyParser = require('body-parser');
+var path = require('path');
 
 server.listen(port, function()
 {
@@ -298,7 +299,7 @@ io.on('connection', function(socket)
         {
           if(/^image\//.test(data.info.type) && data.info.size <= config.fileLimit)
           {
-            filename = data.info.name;
+            filename = path.basename(data.info.name);
             var cont = false;
 //          while(cont)
 //          {
